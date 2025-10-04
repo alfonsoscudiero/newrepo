@@ -245,5 +245,7 @@ WHERE inv_make = 'GM' AND inv_model = 'Hummer';
 
 -- Copy of Task 1, Query #6
 UPDATE inventory
-SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
-    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+SET inv_image = REPLACE(inv_image, '/vehicles/vehicles/', '/vehicles/'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/vehicles/vehicles/', '/vehicles/')
+WHERE inv_image LIKE '%/vehicles/vehicles/%'
+    OR inv_thumbnail LIKE '%/vehicles/vehicles/%';
