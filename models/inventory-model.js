@@ -39,10 +39,10 @@ async function getInventoryByClassificationId(classification_id) {
   - Make sure this function is exported so the controller can call it.
   - If you already have module.exports elsewhere, add this function to that object.
   Example (keep your existing exports and just include this name too):
-  
+*/
+// Export both functions together
   module.exports = {
     getClassifications,            // (existing)
     getInventoryByClassificationId // (this one)
   }
-*/
 
