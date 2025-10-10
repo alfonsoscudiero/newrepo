@@ -11,6 +11,8 @@ const env = require('dotenv').config();
 const app = express();
 const static = require('./routes/static');
 const baseController = require("./controllers/baseController")
+const inventoryRoute = require("./routes/inventoryRoute")
+
 
 /* ***********************
  * View Engine and Templates
@@ -28,6 +30,9 @@ app.use(static);
 //     res.render('index', { title: 'Home' });
 // });
 app.get("/", baseController.buildHome)
+// Inventory routes
+app.use("/inv", inventoryRoute)
+
 
 /* ***********************
  * Local Server Information
@@ -38,11 +43,10 @@ const host = process.env.HOST;
 
 /* ***********************
  * Log statement to confirm server operation
- 
- My Account
- Home
- Custom
- SUV
+My Account
+Home
+Custom
+SUV
  *************************/
 app.listen(port, () => {
     console.log(`app listening on ${host}:${port}`);
