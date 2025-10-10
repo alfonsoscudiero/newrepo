@@ -29,8 +29,8 @@ invCont.buildByClassificationId = async function (req, res, next) {
   let nav = await utilities.getNav()
 
   // 5) Read the classification's display name from the first row of data
-  //    (Assumes there is at least one vehicle. If none, the grid will say no matches.)
-  const className = data[0]?.classification_name || "No"
+  //    (Assumes there is at least one vehicle. If no vehicles are returned for this classification_id, data[0] will be undefined and this line will throw an error.)
+  const className = data[0].classification_name
 
   // 6) Send the fully-formed view back to the browser
   //    - title: dynamic (e.g., "SUV vehicles")
