@@ -10,9 +10,8 @@ const expressLayouts = require('express-ejs-layouts');
 const env = require('dotenv').config();
 const app = express();
 const static = require('./routes/static');
-const baseController = require("./controllers/baseController")
-const inventoryRoute = require("./routes/inventoryRoute")
-
+const baseController = require('./controllers/baseController');
+const inventoryRoute = require('./routes/inventoryRoute');
 
 /* ***********************
  * View Engine and Templates
@@ -29,10 +28,32 @@ app.use(static);
 // app.get('/', function (req, res) {
 //     res.render('index', { title: 'Home' });
 // });
-app.get("/", baseController.buildHome)
+app.get('/', baseController.buildHome);
 // Inventory routes
-app.use("/inv", inventoryRoute)
+app.use('/inv', inventoryRoute);
 
+/* ***********************
+ * Express Error Handler
+ * Place after all other middleware
+ * — This runs only when `next()` receives an error object,
+ *   or an error is thrown in an async route wrapped to pass errors along.
+ *************************/
+app.use(async (err, req, res, next) => {
+    // Build nav for the error view
+    let nav = await utilities.getNav();
+
+    // Helpful server log to see where/what failed (route + message)
+    console.error(`Error at: "${req.originalUrl}": ${err.message}`);
+
+    // Render a friendly error page.
+    // title: prefer an explicit status (e.g., 404), otherwise "Server Error"
+    // message: the human-readable description sent with the error
+    res.render('errors/error', {
+        title: err.status || 'Server Error',
+        message: err.message,
+        nav,
+    });
+});
 
 /* ***********************
  * Local Server Information
