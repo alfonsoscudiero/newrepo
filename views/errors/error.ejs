@@ -2,24 +2,24 @@
 <%- include('../partials/head') %>
 
 <main id="main-content" class="wrapper errors">
-  <!-- Use the incoming title for page H1 -->
-  <h1><%= title %></h1>
+  <!-- Show status + title for clarity (e.g., "404 - Not Found") -->
+  <h1><%= status %> - <%= title %></h1>
 
-  <!-- Show the error message -->
+  <!-- Brief Explanation -->
   <div class="error-message">
     <%- message %>
   </div>
 
-  <!-- Fun visual element for 404 errors -->
-  <% if (title == 404 || title == "404") { %>
+  <!-- Fun visual for 404s only -->
+  <% if (Number(status) === 404) { %>
     <section class="fun-error">
       <h2>Oops! That page took a wrong turn 🚧</h2>
-      <img 
-        src="/images/site/404-cone.png" 
+      <img
+        src="/images/site/404-cone.png"
         alt="Funny traffic cone peeking from a hole - 404 page not found"
         class="error-img"
       >
-      <p>But no worries — our team is on it! 🧑‍💻</p>
+      <p>But no worries, our team is on it!</p>
     </section>
   <% } %>
 
@@ -27,4 +27,4 @@
   
 </main>
 
-<%- include('../partials/foot') %>
+<%- include('../partials/footer') %>
