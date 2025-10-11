@@ -1,0 +1,14 @@
+<% /* Section 1: Content heading — use the title provided by the controller */ %>
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else {
+  // If no title was sent, return home
+  res.redirect('/')
+} %>
+
+<%# Section 2: Message placeholder
+    messages()
+%>
+
+<% /* Section 3: Inventory list/grid — already built server-side; render as-is */ %>
+<%- grid %>
