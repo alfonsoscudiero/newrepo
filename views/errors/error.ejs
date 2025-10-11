@@ -1,0 +1,30 @@
+<!-- views/errors/error.ejs -->
+<%- include('../partials/head') %>
+
+<main id="main-content" class="wrapper errors">
+  <!-- Use the incoming title for page H1 -->
+  <h1><%= title %></h1>
+
+  <!-- Show the error message -->
+  <div class="error-message">
+    <%- message %>
+  </div>
+
+  <!-- Fun visual element for 404 errors -->
+  <% if (title == 404 || title == "404") { %>
+    <section class="fun-error">
+      <h2>Oops! That page took a wrong turn 🚧</h2>
+      <img 
+        src="/images/site/404-cone.png" 
+        alt="Funny traffic cone peeking from a hole - 404 page not found"
+        class="error-img"
+      >
+      <p>But no worries — our team is on it! 🧑‍💻</p>
+    </section>
+  <% } %>
+
+  <p><a href="/">Return to the homepage</a></p>
+  
+</main>
+
+<%- include('../partials/foot') %>

@@ -298,11 +298,6 @@ footer .copyright {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-/* #inv-display li a {
-    text-align: center;
-    display: block;
-} */
-
 #inv-display li img {
     flex: 0 0 130px; /* keep image a fixed column on mobile */
     max-width: 130px;
@@ -334,6 +329,63 @@ footer .copyright {
 
 #inv-display li h2 {
     margin: 1rem 0;
+}
+
+/* ========== ERROR PAGE STYLING ========== */
+.errors {
+  text-align: center;
+  padding: 3rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.errors h1 {
+  font-size: 2.2rem;  
+  color: #f97316; 
+  font-weight: 700;
+}
+
+
+.errors .fun-error h2 {
+  margin-top: 1.2rem;
+  font-size: 1.6rem;
+  color: var(--c-800)
+}
+
+/* Error message paragraph */
+.errors .error-message {
+  margin: 1rem 0;
+  font-size: var(--font-size-small-screen);
+  color: var(--c-600);
+}
+
+/* Responsive error image */
+.errors .error-img {
+  width: 100%;
+  max-width: 250px;  
+  height: auto;
+  margin: 2rem auto;
+  display: block;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Link styling */
+.errors a {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  color: var(--c-600);
+  text-decoration: none;
+  border: 2px solid var(--c-600);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.errors a:hover {
+  background-color: var(--c-600);
+  color: white;
 }
 
 /* ====== Larger screens ====== */
@@ -452,5 +504,22 @@ footer .copyright {
 
     #inv-display li hr {
         display: block;
+    }
+
+    /* ========== ERROR PAGE STYLING ========== */
+    .errors h1 {
+      font-size: 3rem;
+    }
+
+    .errors .fun-error h2 {
+      font-size: 1.6rem;
+    }
+
+    .errors .error-message {
+      font-size: var(--font-size-large-screen);
+    }
+
+    .errors .error-img {
+      max-width: 400px;
     }
 }
