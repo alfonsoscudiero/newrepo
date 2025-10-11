@@ -49,17 +49,20 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
     // CHANGED: ensure we always have a numeric status and a safe message
     const status = Number(err?.status) || 500;
-    const message =
-        err?.message ||
-        (status === 404
-            ? 'The requested resource could not be found.'
-            : 'Something went wrong on our side.');
+
+    // Custom friendly default messages
+    let message
+    if (status === 404) {
+        message = "Oops! That page took a wrong turn 🚧"
+    } else if (status >= 500) {
+        message = "Oops! Something went wrong on our side. Please try again later."
+    } else {
+        // For other 4xx, show the app's validation/message if present, else a default
+        message = err?.message || "Oops! Something was wrong with your request."
+    }
 
     // Helpful server log to see where/what failed (route + message)
-    console.error(`Error at: "${req.originalUrl}": ${message}`);
-
-    // Dynamic page title
-    const title = `${status} ${status === 404 ? 'Not Found' : 'Server Error'}`;
+    // console.error(`Error at: "${req.originalUrl}": ${message}`);
 
     // Try to build nav; if it fails, still show an error page.
     let nav = '';
@@ -68,6 +71,9 @@ app.use(async (err, req, res, next) => {
     } catch (navErr) {
         console.error('Nav build failed in error handler:', navErr.message);
     }
+
+    // Dynamic page title
+    const title = `${status} ${status === 404 ? "Not Found" : status >= 500 ? "Server Error" : "Error"}`
 
     // Render the error view with all necessary data
     res.status(status).render('errors/error', {
