@@ -23,14 +23,15 @@ app.set('layout', './layouts/layout'); // not at views root
 /* ***********************
  * Routes
  *************************/
-app.use(static);
-// Index Route
-// app.get('/', function (req, res) {
-//     res.render('index', { title: 'Home' });
-// });
-app.get('/', baseController.buildHome);
-// Inventory routes
-app.use('/inv', inventoryRoute);
+app.use(static); // loads static content routes
+app.get('/', baseController.buildHome); // homepage route
+app.use('/inv', inventoryRoute); // Inventory feature routes
+// File Not Found Route - must be last route in list
+// — If nothing else matched, we "intentionally" pass a 404 error object
+//   into the pipeline so the Express Error Handler above renders our view.
+app.use(async (req, res, next) => {
+    next({ status: 404, message: "Sorry, we appear to have lost that page." })
+})
 
 /* ***********************
  * Express Error Handler
