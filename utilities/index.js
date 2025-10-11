@@ -48,6 +48,14 @@ Util.getNav = async function (req, res, next) {
   return list
 }
 
+/* ****************************************
+ * Middleware For Handling Errors
+ * Wrap other function in this for 
+ * General Error Handling
+ **************************************** */
+Util.handleErrors = fn => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next) 
+
 // Export the Util object so other files (like controllers)
 // can use getNav() when they need to build the navigation bar.
 module.exports = Util
@@ -106,4 +114,3 @@ Util.buildClassificationGrid = async function(data){
   // Return the HTML string to the controller so it can render the view
   return grid
 }
-
