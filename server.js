@@ -27,10 +27,12 @@ app.set('layout', './layouts/layout'); // not at views root
  * Routes
  *************************/
 app.use(static); // loads static content routes
-app.get('/', baseController.buildHome); // homepage route
+// app.get('/', baseController.buildHome);
+//CHANGED: wrap home route with error handler so async errors flow to global handler
+app.get('/', utilities.handleErrors(baseController.buildHome));
 app.use('/inv', inventoryRoute); // Inventory feature routes
 
-// File Not Found Route - must be last route in list
+// File Not Found Route (404) - must be last route in list
 // — If nothing else matched, we "intentionally" pass a 404 error object
 //   into the pipeline so the Express Error Handler above renders our view.
 app.use(async (req, res, next) => {
@@ -43,24 +45,6 @@ app.use(async (req, res, next) => {
  * — This runs only when `next()` receives an error object,
  *   or an error is thrown in an async route wrapped to pass errors along.
  *************************/
-
-// app.use(async (err, req, res, next) => {
-    // Build nav for the error view
-    // let nav = await utilities.getNav();
-
-    // Helpful server log to see where/what failed (route + message)
-    // console.error(`Error at: "${req.originalUrl}": ${err.message}`);
-
-    // Render a friendly error page.
-    // title: prefer an explicit status (e.g., 404), otherwise "Server Error"
-    // message: the human-readable description sent with the error
-
-//     res.render('errors/error', {
-//         title: err.status || 'Server Error',
-//         message: err.message,
-//         nav,
-//     });
-// });
 
 app.use(async (err, req, res, next) => {
     // CHANGED: ensure we always have a numeric status and a safe message
