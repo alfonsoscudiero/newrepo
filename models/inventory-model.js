@@ -21,10 +21,10 @@ async function getInventoryByClassificationId(classification_id) {
     // Use a parameterized query ($1) to prevent SQL injection
     const data = await pool.query(
       `SELECT * FROM public.inventory AS i 
-       JOIN public.classification AS c 
-         ON i.classification_id = c.classification_id 
-       WHERE i.classification_id = $1`,
-      [classification_id] // <-- This replaces $1 safely
+      JOIN public.classification AS c 
+      ON i.classification_id = c.classification_id 
+      WHERE i.classification_id = $1`,
+    [classification_id] // <-- This replaces $1 safely
     )
     // Return the array of matching rows to the controller
     return data.rows
