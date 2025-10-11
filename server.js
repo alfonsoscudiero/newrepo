@@ -7,20 +7,20 @@
  *************************/
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
-const env = require('dotenv').config();   // Load environment variables early
+const env = require('dotenv').config(); // Load environment variables early
 const app = express();
 
 // Controllers and Utilities
 const static = require('./routes/static');
 const baseController = require('./controllers/baseController');
 const inventoryRoute = require('./routes/inventoryRoute');
-const utilities = require('./utilities/'); 
+const utilities = require('./utilities/');
 
 /* ***********************
  * View Engine and Templates
  *************************/
-app.set('view engine', 'ejs'); 
-app.use(expressLayouts); 
+app.set('view engine', 'ejs');
+app.use(expressLayouts);
 app.set('layout', './layouts/layout'); // not at views root
 
 /* ***********************
@@ -36,8 +36,8 @@ app.use('/inv', inventoryRoute); // Inventory feature routes
 // — If nothing else matched, we "intentionally" pass a 404 error object
 //   into the pipeline so the Express Error Handler above renders our view.
 app.use(async (req, res, next) => {
-    next({ status: 404, message: "Sorry, we appear to have lost that page." })
-})
+    next({ status: 404, message: 'Sorry, we appear to have lost that page.' });
+});
 
 /* ***********************
  * Express Error Handler - Global error handler
@@ -49,40 +49,41 @@ app.use(async (req, res, next) => {
 app.use(async (err, req, res, next) => {
     // CHANGED: ensure we always have a numeric status and a safe message
     const status = Number(err?.status) || 500;
-    const message = err?.message || (status === 404
-    ? "The requested resource could not be found."
-    : "Something went wrong on our side.");
+    const message =
+        err?.message ||
+        (status === 404
+            ? 'The requested resource could not be found.'
+            : 'Something went wrong on our side.');
 
     // Helpful server log to see where/what failed (route + message)
     console.error(`Error at: "${req.originalUrl}": ${message}`);
 
+    // Dynamic page title
+    const title = `${status} ${status === 404 ? 'Not Found' : 'Server Error'}`;
+
     // Try to build nav; if it fails, still show an error page.
-    let nav = "";
+    let nav = '';
     try {
         nav = await utilities.getNav();
-        } catch (navErr) {
-        console.error("Nav build failed in error handler:", navErr.message);
+    } catch (navErr) {
+        console.error('Nav build failed in error handler:', navErr.message);
     }
 
-  // CHANGED: set real HTTP status, pass both title and status to the view
-    res
-    .status(status)
-    .render('errors/error', {
-        title: status === 404 ? 'Not Found' : 'Server Error', 
-        status, 
+    // Render the error view with all necessary data
+    res.status(status).render('errors/error', {
+        title: status === 404 ? 'Not Found' : 'Server Error',
+        status,
         message,
         nav,
     });
 });
-
-
 
 /* ***********************
  * Local Server Information
  * Values from .env (environment) file
  *************************/
 const port = process.env.PORT;
-const host = process.env.HOST; 
+const host = process.env.HOST;
 
 /* ***********************
  * Log statement to confirm server operation
