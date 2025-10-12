@@ -17,7 +17,7 @@ const invCont = {}
 invCont.buildByClassificationId = async function (req, res, next) {
   // 1) Get the id from the route, supporting either :classificationId or :id
   const rawId = req.params.classificationId ?? req.params.id // NEW 
-  const classification_id = Number(rawId) // NEW (normalize to number)
+  const classification_id = Number(rawId) // NEW (normalize to number)It looks llo
 
   // If the param is missing or not a number, treat as not found
   if (!Number.isInteger(classification_id)) {
