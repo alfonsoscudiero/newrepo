@@ -53,5 +53,42 @@ invCont.buildByClassificationId = async function (req, res, next) {
   })
 }
 
+/* ***************************
+ *  Build single vehicle detail view
+ * ************************** */
+invCont.buildVehicleDetail = async function (req, res, next) {
+  const invId = Number(req.params.invId) 
+
+  if (!Number.isInteger(invId)) {
+    return next({ status: 404, message: "Invalid vehicle Id." })
+  }
+
+  // 1. Query the database for the vehicle
+  const data = await invModel.getVehicleById(invId)
+
+  // If not found, forward to error handler
+  if (!data || data.length === 0) {
+    return next ({status: 404, message: "Vehicle not found."})
+  }
+
+  // 3. Get navigation
+  const nav = await utilities.getNav()
+
+  // 4. Get vehicle data
+  const item = data[0]
+  const name = `${item.inv_year} ${item.inv_make} ${item.inv_model}`
+
+  // 5. Render the view
+  res.render("./inventory/detail", {
+    title: name + " Details",
+    nav,
+    name,
+    item,
+  })
+}
+
 // Export this controller so routes can call its functions
-module.exports = invCont
+module.exports = {
+  invCont, 
+  buildVehicleDetail,
+};
