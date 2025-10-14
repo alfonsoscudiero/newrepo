@@ -34,14 +34,33 @@ async function getInventoryByClassificationId(classification_id) {
     }
 }
 
+/* ***************************
+ *  Get vehicle details by inventory id
+ * ************************** */
+async function getVehicleById(inv_id) {
+    try {
+        const data = await pool.query(
+        `SELECT * FROM public.inventory AS i
+            JOIN public.classification AS c
+            ON i.classification_id = c.classification_id
+        WHERE i.inv_id = $1`,
+        [inv_id]
+    );
+    return data.rows[0]; // return a single object
+    } catch (error) {
+        console.error("getVehicleById error " + error);
+    }
+}
+
 /* 
-  IMPORTANT:
-  - Make sure this function is exported so the controller can call it.
-  - If you already have module.exports elsewhere, add this function to that object.
-  Example (keep your existing exports and just include this name too):
+IMPORTANT:
+- Make sure this function is exported so the controller can call it.
+- If you already have module.exports elsewhere, add this function to that object.
+Example (keep your existing exports and just include this name too):
 */
 // Export both functions together
 module.exports = {
-    getClassifications, // (existing)
-    getInventoryByClassificationId, // (this one)
+    getClassifications, 
+    getInventoryByClassificationId,
+    getVehicleById, 
 };
