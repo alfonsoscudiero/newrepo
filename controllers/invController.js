@@ -80,10 +80,10 @@ invCont.buildVehicleDetail = async function (req, res, next) {
 
   // 5. Render the view
   res.render("./inventory/detail", {
-    title: name + " Details",
+    title: name,
     nav,
     name,
-    item,
+    vehicle: item,
   })
 }
 
