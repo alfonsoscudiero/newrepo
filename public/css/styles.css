@@ -36,7 +36,7 @@ body {
     color: var(--ink);
     background: var(--bg);
     line-height: 1.6;
-    min-height: 100dvh;
+    min-height: 100%;
 }
 
 /* Main */
@@ -138,11 +138,12 @@ h1 {
     padding: 1rem;
     border-radius: 0.75rem;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
-    background-color: var(--c-100); /*Falllback color */
+    background-color: var(--wh); /*Falllback color */
     background-image: url(../images/vehicles/delorean.jpg);
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
+    /* aspect-ratio: 16 / 6; */
 }
 
 .hero-copy {
@@ -340,16 +341,15 @@ footer .copyright {
 }
 
 .errors h1 {
-    font-size: 2.2rem;  
-    color: #f97316; 
+    font-size: 2.2rem;
+    color: #f97316;
     font-weight: 700;
 }
-
 
 .errors .fun-error h2 {
     margin-top: 1.2rem;
     font-size: 1.6rem;
-    color: var(--c-800)
+    color: var(--c-800);
 }
 
 /* Error message paragraph */
@@ -362,7 +362,7 @@ footer .copyright {
 /* Responsive error image */
 .errors .error-img {
     width: 100%;
-    max-width: 250px;  
+    max-width: 250px;
     height: auto;
     margin: 2rem auto;
     display: block;
@@ -373,7 +373,6 @@ footer .copyright {
 .fun-error p {
     font-size: var(--font-size-small-screen);
     color: var(--c-600);
-
 }
 
 /* Link styling */
@@ -429,6 +428,7 @@ footer .copyright {
     }
 
     .hero {
+        min-height: 500px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         align-items: center;
@@ -530,6 +530,6 @@ footer .copyright {
     }
 
     .fun-error p {
-    font-size: var(--font-size-large-screen);
-}
+        font-size: var(--font-size-large-screen);
+    }
 }
