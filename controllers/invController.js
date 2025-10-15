@@ -8,20 +8,15 @@ const invCont = {}
 
 /* ***************************
  *  Build inventory by classification view
- *  Steps:
- *  1) Read classification id from URL (e.g., /inv/type/2)
- *  2) Query the DB
- *  3) Build grid + nav
- *  4) Render the view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   // 1) Get the id from the route, supporting either :classificationId or :id
-  const rawId = req.params.classificationId ?? req.params.id // NEW 
-  const classification_id = Number(rawId) // NEW (normalize to number)It looks llo
+  const rawId = req.params.classificationId ?? req.params.id  
+  const classification_id = Number(rawId) 
 
   // If the param is missing or not a number, treat as not found
   if (!Number.isInteger(classification_id)) {
-    return next({ status: 404, message: "Invalid classification id." }) // NEW
+    return next({ status: 404, message: "Invalid classification id." })
   }
 
   // 2) Query the database for vehicles in this classification
@@ -32,7 +27,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
     return next({
       status: 404,
       message: "No inventory found for that classification.",
-    }) // NEW
+    }) 
   }
 
   // 3) Build grid + nav
@@ -89,6 +84,6 @@ invCont.buildVehicleDetail = async function (req, res, next) {
 
 // Export this controller so routes can call its functions
 module.exports = {
-  invCont, 
-  buildVehicleDetail,
-};
+  buildByClassificationId: invCont.buildByClassificationId,
+  buildVehicleDetail: invCont.buildVehicleDetail,
+}
