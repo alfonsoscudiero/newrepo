@@ -51,36 +51,93 @@ invCont.buildByClassificationId = async function (req, res, next) {
 /* ***************************
  *  Build single vehicle detail view
  * ************************** */
+// invCont.buildVehicleDetail = async function (req, res, next) {
+//   const inv_id = Number(req.params.inv_id) 
+
+//   if (!Number.isInteger(inv_id)) {
+//     return next({ status: 404, message: "Invalid vehicle Id." })
+//   }
+
+//   // 1. Query the database for the vehicle
+//   const data = await invModel.getVehicleById(inv_id)
+
+//   // If not found, forward to error handler
+//   if (!data || data.length === 0) {
+//     return next ({status: 404, message: "Vehicle not found."})
+//   }
+
+//   try {
+//     // 3. Get navigation
+//     const nav = await utilities.getNav()
+
+//     // 4. Get vehicle data
+//     const name = `${data.inv_year} ${data.inv_make} ${data.inv_model}`
+
+//     // 5. Render the view
+//     res.render("./inventory/detail", {
+//       title: name,
+//       nav,
+//       name,
+//       vehicle: data,
+//     })
+//   } catch (error) {
+//       console.error("Error building vehicle detail:", error);
+//       next(error);
+//   }
+// }
+
+
 invCont.buildVehicleDetail = async function (req, res, next) {
-  const invId = Number(req.params.invId) 
+  try {
+    const inv_id_raw = req.params.inv_id;
+    const inv_id = Number(inv_id_raw);
 
-  if (!Number.isInteger(invId)) {
-    return next({ status: 404, message: "Invalid vehicle Id." })
+    console.log("[CTRL] buildVehicleDetail inv_id_raw =", inv_id_raw);
+
+    if (!Number.isInteger(inv_id)) {
+      console.warn("[CTRL] invalid inv_id");
+      return next({ status: 404, message: "Invalid vehicle Id." });
+    }
+
+    // 1) Fetch the vehicle
+    const vehicle = await invModel.getVehicleById(inv_id);
+
+    if (!vehicle) {
+      console.warn("[CTRL] vehicle not found for inv_id =", inv_id);
+      return next({ status: 404, message: "Vehicle not found." });
+    }
+
+    // 2) Nav + computed fields
+    const nav = await utilities.getNav();
+    const name = `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`;
+
+    // Format price & miles
+    const priceNumber = Number(vehicle.inv_price);
+    const milesNumber = Number(vehicle.inv_miles);
+    const priceFormatted = Number.isFinite(priceNumber)
+      ? priceNumber.toLocaleString("en-US")
+      : String(vehicle.inv_price);
+    const milesFormatted = Number.isFinite(milesNumber)
+      ? milesNumber.toLocaleString("en-US")
+      : String(vehicle.inv_miles);
+
+    console.log("[CTRL] rendering details for:", name);
+
+    // 3) Render the view
+    res.render("./inventory/details", {
+      title: name,
+      nav,
+      name,
+      vehicle,
+      priceFormatted,
+      milesFormatted,
+    });
+  } catch (error) {
+    console.error("[CTRL] Error building vehicle detail:", error);
+    next(error);
   }
+};
 
-  // 1. Query the database for the vehicle
-  const data = await invModel.getVehicleById(invId)
-
-  // If not found, forward to error handler
-  if (!data || data.length === 0) {
-    return next ({status: 404, message: "Vehicle not found."})
-  }
-
-  // 3. Get navigation
-  const nav = await utilities.getNav()
-
-  // 4. Get vehicle data
-  const item = data[0]
-  const name = `${item.inv_year} ${item.inv_make} ${item.inv_model}`
-
-  // 5. Render the view
-  res.render("./inventory/detail", {
-    title: name,
-    nav,
-    name,
-    vehicle: item,
-  })
-}
 
 // Export this controller so routes can call its functions
 module.exports = {
