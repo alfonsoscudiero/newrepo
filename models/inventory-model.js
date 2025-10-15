@@ -9,8 +9,6 @@ async function getClassifications() {
     );
 }
 
-module.exports = { getClassifications };
-
 /* ***************************
  *  Get all inventory items and classification_name by classification_id
  *  - Ask the database for vehicles that belong to a specific classification
@@ -21,9 +19,9 @@ async function getInventoryByClassificationId(classification_id) {
         // Use a parameterized query ($1) to prevent SQL injection
         const data = await pool.query(
             `SELECT * FROM public.inventory AS i 
-      JOIN public.classification AS c 
-        ON i.classification_id = c.classification_id 
-      WHERE i.classification_id = $1`,
+                JOIN public.classification AS c 
+                ON i.classification_id = c.classification_id 
+            WHERE i.classification_id = $1`,
             [classification_id] // <-- This replaces $1 safely
         );
         // Return the array of matching rows to the controller
@@ -39,18 +37,26 @@ async function getInventoryByClassificationId(classification_id) {
  * ************************** */
 async function getVehicleById(inv_id) {
     try {
+        const id = Number(inv_id); // ensure numeric
+        console.log("[MODEL] getVehicleById id =", id);
+
         const data = await pool.query(
-        `SELECT * FROM public.inventory AS i
+        `SELECT i.*, c.classification_name
+            FROM public.inventory AS i
             JOIN public.classification AS c
             ON i.classification_id = c.classification_id
-        WHERE i.inv_id = $1`,
-        [inv_id]
-    );
-    return data.rows[0]; // return a single object
+            WHERE i.inv_id = $1`,
+        [id]
+        );
+
+        console.log("[MODEL] rows returned =", data?.rows?.length || 0);
+        return data.rows[0]; // single row or undefined
     } catch (error) {
-        console.error("getVehicleById error " + error);
+        console.error("[MODEL] getVehicleById error:", error);
+        throw error; // let the global handler show a friendly 500
     }
 }
+
 
 /* 
 IMPORTANT:
