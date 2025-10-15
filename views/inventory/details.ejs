@@ -12,10 +12,10 @@
     <div class="detail-info">
       <h2><%= vehicle.inv_make %> <%= vehicle.inv_model %> Details</h2>
 
-      <div class="field price">Price:</b> $<%= vehicle.inv_price.toLocaleString() %></div>
+      <div class="field price"><b>Price: $<%= priceFormatted %></b></div>
       <div class="field"><b>Description:</b> <%= vehicle.inv_description %></div>
       <div class="field"><b>Color:</b> <%= vehicle.inv_color %></div>
-      <div class="field"><b>Miles:</b> <%= vehicle.inv_miles.toLocaleString() %></div>
+      <div class="field"><b>Miles:</b> <%= milesFormatted %></div>
     </div>
   </div>
 
