@@ -1,22 +1,37 @@
 <!-- views/errors/error.ejs -->
 <main id="main-content" class="wrapper errors">
     <!-- Show status + title for clarity (e.g., "404 - Not Found") -->
-    <h1><%= status %> - <%= title %></h1>
+    <h1><%= Number(status) %> - <%= title || (Number(status) === 404 ? "Not Found" : "Server Error") %></h1>
 
     <!-- Brief Explanation -->
-    <div class="error-message"><%- message %></div>
+    <div class="error-message">
+    <%- message
+        || (Number(status) === 404
+            ? "The page you’re looking for doesn’t exist or was moved."
+            : "Oops! Something went wrong on our side. Please try again later.") %>
+    </div>
+
 
     <!-- Fun visual for 404s only -->
     <% if (Number(status) === 404) { %>
-    <section class="fun-error">
-        <h2>Looks like this route is under construction</h2>
-        <img
-            src="/images/site/404-cone.png"
-            alt="Funny traffic cone peeking from a hole - 404 page not found"
-            class="error-img"
-        />
-        <p>But no worries, our team is on it!</p>
-    </section>
+        <section class="fun-error">
+            <h2>The page you’re looking for doesn’t exist or was moved</h2>
+            <img
+                src="/images/site/404-cone.png"
+                alt="Funny traffic cone peeking from a hole - 404 page not found"
+                class="error-img"
+            />
+            <p>But no worries, our team is on it!</p>
+        </section>
+    <% } %>
+
+    <!-- Error 500s -->
+    <% if (Number(status) === 500) { %>
+        <section class="server-note fun-error">
+            <h2>Our crew has been alerted</h2>
+            <img src="/images/site/500-Error.png" alt="500 Internal Server Error" class="error-img">
+            <p>They’re checking under the hood as we speak</p>
+        </section>
     <% } %>
 
     <p><a href="/">Return to the homepage</a></p>
