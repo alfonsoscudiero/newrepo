@@ -1,3 +1,5 @@
+// controllers/invController.js
+
 // Bring in the data access model (inventory-model) to query the database
 const invModel = require("../models/inventory-model")
 // Bring in shared utility functions (navigation builder, grid builder, etc.)
@@ -89,6 +91,12 @@ invCont.buildByClassificationId = async function (req, res, next) {
 
 invCont.buildVehicleDetail = async function (req, res, next) {
   try {
+    // Assignment 3 - Task 3 - Simulate a 500 error when requested
+    // Example: /inv/detail/10?dev500=1
+    if (req.query.dev500 === "1") {
+      throw new Error("Task 3: forced 500");
+    }
+    // -------------------------------------------
     const inv_id_raw = req.params.inv_id;
     const inv_id = Number(inv_id_raw);
 

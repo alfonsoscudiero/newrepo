@@ -1,3 +1,4 @@
+// models/inventory-model.js
 const pool = require('../database/');
 
 /* ***************************
@@ -24,11 +25,14 @@ async function getInventoryByClassificationId(classification_id) {
             WHERE i.classification_id = $1`,
             [classification_id] // <-- This replaces $1 safely
         );
+
+        console.log("[CLASSIFICATION] classification by id =", data?.rows?.length || 0);
         // Return the array of matching rows to the controller
-        return data.rows;
+        return data.rows || null;
     } catch (error) {
         // For now, log the error. (Later you might use a centralized error handler.)
         console.error('getclassificationsbyid error ' + error);
+        throw error
     }
 }
 
@@ -50,13 +54,12 @@ async function getVehicleById(inv_id) {
         );
 
         console.log("[MODEL] rows returned =", data?.rows?.length || 0);
-        return data.rows[0]; // single row or undefined
+        return data.rows[0] || null; // single row or undefined
     } catch (error) {
         console.error("[MODEL] getVehicleById error:", error);
         throw error; // let the global handler show a friendly 500
     }
 }
-
 
 /* 
 IMPORTANT:
