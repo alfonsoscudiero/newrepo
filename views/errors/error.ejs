@@ -1,5 +1,5 @@
 <!-- views/errors/error.ejs -->
-<main id="main-content" class="wrapper errors">
+<section id="main-content" class="wrapper errors">
     <!-- Show status + title for clarity (e.g., "404 - Not Found") -->
     <h1><%= Number(status) %> - <%= title || (Number(status) === 404 ? "Not Found" : "Server Error") %></h1>
 
@@ -35,4 +35,4 @@
     <% } %>
 
     <p><a href="/">Return to the homepage</a></p>
-</main>
+</section>
