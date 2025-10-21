@@ -9,7 +9,8 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const env = require('dotenv').config(); // Load environment variables early
 const app = express();
-
+const session = require("express-session"); //express-session
+const pool = require('./database/') // Postgres pool
 // Controllers and Utilities
 const static = require('./routes/static');
 const baseController = require('./controllers/baseController');
@@ -22,6 +23,22 @@ const utilities = require('./utilities/');
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', './layouts/layout'); // not at views root
+/* ***********************
+ * Middleware
+ * ************************/
+// This sets up sessions using express-session
+// and stores session data in our PostgreSQL database
+app.use(session({ //invokes the app.use() function
+    store: new (require('connect-pg-simple')(session))({ //where the session data will be stored
+        createTableIfMissing: true, // creates 'session' table automatically if it doesn't exist
+        pool,                       // uses our database connection from database/index.js
+    }),
+    secret: process.env.SESSION_SECRET, // protects session data; we’ll create this key in the .env file later
+    resave: true,                       // must be true when using flash messages
+    saveUninitialized: true,            // creates a session even if nothing is stored yet
+    name: 'sessionId',                  // name of the cookie that stores the session ID
+}))
+
 
 /* ***********************
  * Routes
