@@ -26,8 +26,8 @@ app.set('layout', './layouts/layout'); // not at views root
 /* ***********************
  * Middleware
  * ************************/
-// This sets up sessions using express-session
-// and stores session data in our PostgreSQL database
+// This sets up Sessions using express-session
+// and stores session data in PostgreSQL database
 app.use(session({ //invokes the app.use() function
     store: new (require('connect-pg-simple')(session))({ //where the session data will be stored
         createTableIfMissing: true, // creates 'session' table automatically if it doesn't exist
@@ -38,8 +38,15 @@ app.use(session({ //invokes the app.use() function
     saveUninitialized: true,            // creates a session even if nothing is stored yet
     name: 'sessionId',                  // name of the cookie that stores the session ID
 }))
-
-
+// ***********************
+// Express Messages Middleware
+// ***********************
+app.use(require('connect-flash')()) //loads the connect-flash package and enables flash messages
+app.use(function (req, res, next) {
+    // Make messages() helper available in all views (EJS files)
+    res.locals.messages = require('express-messages')(req, res)
+    next() // continue to the next middleware or route
+})
 /* ***********************
  * Routes
  *************************/
