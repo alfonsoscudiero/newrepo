@@ -450,6 +450,13 @@ footer .copyright {
     font-weight: 700;
 }
 
+/* Flash Message */
+.notice {
+    color: #933e01;
+    font-weight: 600;
+    list-style: none;
+}
+
 /* ====== Larger screens ====== */
 @media screen and (min-width: 820px) {
     html {
