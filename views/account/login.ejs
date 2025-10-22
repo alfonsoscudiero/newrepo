@@ -8,7 +8,7 @@
 <section class="card auth-card">
   <h2>Account Login</h2>
   <div class="auth-card-wrapper">
-    <form id="loginForm" class="form auth-form" action="/account/loing" method="post" novalidate>
+    <form id="loginForm" class="form auth-form" action="/account/login" method="post" novalidate>
       <div class="form-row">
         <label for="account_email">Email:</label>
         <input 
@@ -17,6 +17,7 @@
           name="account_email" 
           autocomplete="username" 
           placeholder="youremail@example.com" 
+          value="<%= typeof account_email !== 'undefined' ? account_email : '' %>"
           required
         >
       </div>
@@ -35,7 +36,7 @@
       <button type="submit" class="btn primary">SIGN IN</button>
     </form>
 
-    <p id="create-account">
+    <p class="create-account">
       No acocunt?
       <a href="/account/register" class="new-account">Sign-up</a>
     </p>
