@@ -25,6 +25,8 @@ async function buildLogin(req, res, next) {
  * - Keep the view path consistent with folder structure: "views/account/register.ejs"
  * **************************************** */
 async function buildRegister(req, res, next) {
+  //  Fetch the navigation HTML before rendering
+  let nav = await utilities.getNav();
   // Render the "account/register" view and pass a simple title variable.
   res.render("account/register", {
     title: "Register",
