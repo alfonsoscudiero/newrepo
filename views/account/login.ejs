@@ -1,0 +1,43 @@
+<!-- views/account/login.ejs -->
+
+<h1><%= title %></h1>
+
+<!-- Flash message (renders only if something was sent) -->
+<!-- <%- messages() %>  Is commented so it does not render on browser--> 
+
+<section class="card auth-card">
+  <div class="auth-card-wrapper">
+    <form id="loginForm" class="form auth-form" action="/account/loing" method="post" novalidate>
+      <div class="form-row">
+        <label for="account_email">Email:</label>
+        <input 
+          type="email" 
+          id="account_email" 
+          name="account_email" 
+          autocomplete="username" 
+          placeholder="youremail@example.com" 
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <label for="account_password">Password:</label>
+        <input 
+          type="password"
+          id="account_password"
+          autocomplete="current-password"
+          placeholder="Your password"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn primary">SIGN IN</button>
+    </form>
+
+    <p id="create-account">
+      No acocunt?
+      <a href="/account/register" class="new-account">Sign-up</a>
+    </p>
+  </div>
+
+</section>
