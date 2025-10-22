@@ -3,7 +3,7 @@
 <h1><%= title %></h1>
 
 <!-- Flash message (renders only if something was sent) -->
-<!-- <%- messages() %>  Is commented so it does not render on browser--> 
+<%- messages() %>
 
 <section class="card auth-card">
   <h2>Account Login</h2>
@@ -27,6 +27,7 @@
         <input 
           type="password"
           id="account_password"
+          name="account_password"
           autocomplete="current-password"
           placeholder="Your password"
           required

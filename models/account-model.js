@@ -15,7 +15,7 @@ const pool = require("../database/")
 async function registerAccount(account_firstname, account_lastname, account_email, account_password) {
   try {
     // SQL command to insert a new record into the "account" table
-    const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password) VALUES ($1, $2, $3, $4, 'Client') RETURNING *"
+    const sql = "INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type) VALUES ($1, $2, $3, $4, 'Client') RETURNING *"
 
     // Execute the SQL command using parameterized query to avoid SQL injection
     return await pool.query(sql, [account_firstname, account_lastname, account_email, account_password])

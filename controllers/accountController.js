@@ -58,8 +58,15 @@ async function registerAccount(req, res) {
     account_password
   )
 
+  // 🔎 Always show basic shape
+  console.log("register result -> type:", typeof regResult, "rowCount:", regResult?.rowCount)
+  // 🔎 If the model returned an error message string, print it so we know the cause
+  if (typeof regResult === "string") {
+    console.log("register model error ->", regResult)
+  }
+
   // Handle success/failure directly
-  if (regResult) {
+  if (regResult && regResult.rowCount > 0) {
     // Flash success message using the user's first name
     req.flash(
       "notice",
