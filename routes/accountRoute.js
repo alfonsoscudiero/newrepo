@@ -13,7 +13,10 @@ const accountController = require("../controllers/accountController") //Import t
  *  Deliver login view  
 The base path "/account" will be added in server.js 
  * ************************** */
-router.get("/login", utilities.handleErrors(accountController.buildLogin)) // use error handler + controller
+router.get("/login", utilities.handleErrors(accountController.buildLogin)); // use error handler + controller
+
+// New route for Register
+router.get("/register", utilities.handleErrors(accountController.buildRegister));
 
 // Export the router so it can be used by server.js
 module.exports = router
