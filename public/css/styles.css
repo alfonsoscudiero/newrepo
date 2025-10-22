@@ -472,6 +472,13 @@ footer .copyright {
     max-width: 600px;
 }
 
+.auth-card h2 {
+    text-align: left;
+    margin-top: 0.5;
+    margin-bottom: -1rem;
+    font-size: var(--font-size-large-screen);
+}
+
 .auth-card-wrapper {
     width: 100%;
     display: flex;

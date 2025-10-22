@@ -6,6 +6,7 @@
 <!-- <%- messages() %>  Is commented so it does not render on browser--> 
 
 <section class="card auth-card">
+  <h2>Account Login</h2>
   <div class="auth-card-wrapper">
     <form id="loginForm" class="form auth-form" action="/account/loing" method="post" novalidate>
       <div class="form-row">
@@ -17,7 +18,7 @@
           autocomplete="username" 
           placeholder="youremail@example.com" 
           required
-        />
+        >
       </div>
 
       <div class="form-row">
@@ -28,7 +29,7 @@
           autocomplete="current-password"
           placeholder="Your password"
           required
-        />
+        >
       </div>
 
       <button type="submit" class="btn primary">SIGN IN</button>
