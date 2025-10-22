@@ -16,6 +16,9 @@ const static = require('./routes/static');
 const baseController = require('./controllers/baseController');
 const inventoryRoute = require('./routes/inventoryRoute');
 const utilities = require('./utilities/');
+// Enable account routes (handles /account/* paths like /account/login) - Module 05
+const accountRoute = require("./routes/accountRoute");
+
 
 /* ***********************
  * View Engine and Templates
@@ -55,6 +58,9 @@ app.use(static); // loads static content routes
 //CHANGED: wrap home route with error handler so async errors flow to global handler
 app.get('/', utilities.handleErrors(baseController.buildHome));
 app.use('/inv', inventoryRoute); // Inventory feature routes
+
+// Module 05 - Anything defined in routes/accountRoute.js is now reachable under /account 
+app.use("/account", accountRoute); //Account route
 
 
 // File Not Found Route (404) - must be last route in list
