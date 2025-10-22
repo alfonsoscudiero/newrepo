@@ -18,5 +18,8 @@ router.get("/login", utilities.handleErrors(accountController.buildLogin)); // u
 // New route for Register
 router.get("/register", utilities.handleErrors(accountController.buildRegister));
 
+// Process registration (POST) — this receives the form data from /account/register
+router.post("/register",utilities.handleErrors(accountController.registerAccount)); // <-- controller will handle saving/validation
+
 // Export the router so it can be used by server.js
 module.exports = router
