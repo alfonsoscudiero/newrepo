@@ -18,6 +18,21 @@ async function buildLogin(req, res, next) {
     nav,
   })
 }
+/* ****************************************
+ * buildRegister
+ * Renders the Register view.
+ * - No DB calls; just render the EJS template with a title.
+ * - Keep the view path consistent with folder structure: "views/account/register.ejs"
+ * **************************************** */
+async function buildRegister(req, res, next) {
+  // Render the "account/register" view and pass a simple title variable.
+  res.render("account/register", {
+    title: "Register",
+    nav,
+    errors: null
+  });
+}
+
 
 //Export controller functions to be used in routes
-module.exports = { buildLogin }
+module.exports = { buildLogin, buildRegister }
