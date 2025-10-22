@@ -10,7 +10,9 @@ const expressLayouts = require('express-ejs-layouts');
 const env = require('dotenv').config(); // Load environment variables early
 const app = express();
 const session = require("express-session"); //express-session
-const pool = require('./database/') // Postgres pool
+const pool = require('./database/'); // Postgres pool
+const bodyParser = require("body-parser"); //// Parse JSON & 
+// HTML form bodies
 // Controllers and Utilities
 const static = require('./routes/static');
 const baseController = require('./controllers/baseController');
@@ -26,9 +28,11 @@ const accountRoute = require("./routes/accountRoute");
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
 app.set('layout', './layouts/layout'); // not at views root
+
 /* ***********************
  * Middleware
  * ************************/
+
 // This sets up Sessions using express-session
 // and stores session data in PostgreSQL database
 app.use(session({ //invokes the app.use() function
@@ -41,6 +45,7 @@ app.use(session({ //invokes the app.use() function
     saveUninitialized: true,            // creates a session even if nothing is stored yet
     name: 'sessionId',                  // name of the cookie that stores the session ID
 }))
+
 // ***********************
 // Express Messages Middleware
 // ***********************
@@ -50,6 +55,13 @@ app.use(function (req, res, next) {
     res.locals.messages = require('express-messages')(req, res)
     next() // continue to the next middleware or route
 })
+
+// ***************************************************
+// Make parsed body available at req.body | Module 05
+// ***************************************************
+app.use(bodyParser.json()) //use the body parser to work with JSON data
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
 /* ***********************
  * Routes
  *************************/
