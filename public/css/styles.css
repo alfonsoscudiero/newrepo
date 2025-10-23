@@ -509,6 +509,10 @@ footer .copyright {
     width: 100%; /* ✅ full width of padded form */
 }
 
+.form-row input:focus {
+    outline: 3px solid #d05f0f;
+}
+
 .form-row label {
     width: 100%;
     font-weight: 600;
