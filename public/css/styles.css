@@ -342,7 +342,7 @@ footer .copyright {
 
 .errors h1 {
     font-size: 2.2rem;
-    color: #933e01;
+    color: #bb5811;
     font-weight: 700;
 }
 
@@ -452,7 +452,7 @@ footer .copyright {
 
 /* Flash Message */
 .notice {
-    color: #933e01;
+    color: #bb5811;
     font-weight: 600;
     list-style: none;
 }
@@ -506,11 +506,11 @@ footer .copyright {
 
 .form-row input,
 .auth-card .btn {
-    width: 100%; /* ✅ full width of padded form */
+    width: 100%; /* full width of padded form */
 }
 
 .form-row input:focus {
-    outline: 3px solid #d05f0f;
+    outline: 3px solid #ff974d;
 }
 
 .form-row label {
@@ -548,8 +548,8 @@ footer .copyright {
 
 .btn:hover {
     border-style: solid;
-    border-color: #933e01;
-    color: #933e01;
+    border-color: #bb5811;
+    color: #bb5811;
 }
 
 .create-account {
@@ -593,13 +593,18 @@ footer .copyright {
 
 /* Server-side validation messages */
 .notice {
-    color: #933e01;
+    display: block;
+    width: 92%;    
+    max-width: 500px;  
+    color: #ff974d;
     list-style-type: disc;
-    margin: 1rem 0;
+    /* margin: 1rem 0; */
+    text-align: left;
+    padding-left: 0;
 }
 
 .notice li {
-    margin-left: 1rem;
+    /* margin-left: 0.25rem; */
     line-height: 1.4;
     font-size: var(--font-size-small-screen);
 }
