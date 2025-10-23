@@ -3,6 +3,9 @@
 const utilities = require(".")
 const { body, validationResult } = require("express-validator")
 
+// async duplicate-email check against the DB
+const accountModel = require("../models/account-model")
+
 // Create validate object
 const validate = {}
 
@@ -33,7 +36,15 @@ validate.registrationRules = () => {
       .trim()
       .isEmail()
       .normalizeEmail()
-      .withMessage("A valid email is required."),
+      .withMessage("A valid email is required.")
+      .custom(async (account_email) => {
+      // Returns a number (rowCount). 0 = not found; >0 = already registered.
+      const emailExists = await accountModel.checkExistingEmail(account_email)
+      if (emailExists) {
+        // Throwing an Error
+        throw new Error("Email exists. Please log in or use different email")
+      }
+    }),
 
     // password is required and must be strong
     body("account_password")
@@ -59,7 +70,7 @@ validate.checkRegData = async (req, res, next) => {
   const errors = validationResult(req)
 
   /* ===== TEMPORARY DEBUG LOGS (for VS Code terminal) =====
-     You can delete or comment these out after verifying.
+  You can delete or comment these out after verifying.
   --------------------------------------------------------- */
   console.log("Validation result object:", errors)
   console.log("Error messages (if any):", errors.array())
