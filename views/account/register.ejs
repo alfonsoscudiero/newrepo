@@ -1,4 +1,7 @@
-<!-- views/account/register.ejs -->
+<!-- ***************************************
+ * views/account/register.ejs
+ * Registration page with server-side validation
+ * *************************************** -->
 
 <h1><%= title %></h1>
 
@@ -8,6 +11,20 @@
 <section class="card auth-card">
   <h2>New Account</h2>
   <div class="auth-card-wrapper">
+    <!-- *******************************
+    Display server-side validation errors
+    ******************************* -->
+    <% if (errors) { %>
+      <ul class="notice">
+        <% errors.array().forEach(error => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+
+    <!-- *******************************
+    Registration Form
+    ******************************* -->
     <form id="registerForm" class="form auth-form" action="/account/register" method="post">
       
       <!-- First Name -->
