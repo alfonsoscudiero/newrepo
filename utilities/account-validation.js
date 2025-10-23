@@ -16,7 +16,6 @@ validate.registrationRules = () => {
       .trim()
       .escape()
       .notEmpty()
-      .isLength({ min: 1 })
       .withMessage("Please provide a first name."),
 
     // lastname is required and must be string
@@ -24,8 +23,10 @@ validate.registrationRules = () => {
       .trim()
       .escape()
       .notEmpty()
+      .withMessage("Please provide a last name.")
+      .bail()
       .isLength({ min: 2 })
-      .withMessage("Please provide a last name."),
+      .withMessage("Last name must be at least 2 characters long."),
 
     // valid email is required and must not already exist
     body("account_email")
@@ -44,28 +45,42 @@ validate.registrationRules = () => {
         minSymbols: 1,
       })
       .withMessage(
-        "Password must be at least 12 characters and include uppercase, lowercase, number, and special character."
+        "Password does not meet requirements."
       ),
   ]
 }
 
 /* ******************************
  * Check data and return errors or continue
+ *  - We render with the FULL "errors" RESULT object (not errors.array())
+ *  - The register.ejs expects to call errors.array() in the template
  * ****************************** */
 validate.checkRegData = async (req, res, next) => {
   const errors = validationResult(req)
+
+  /* ===== TEMPORARY DEBUG LOGS (for VS Code terminal) =====
+     You can delete or comment these out after verifying.
+  --------------------------------------------------------- */
+  console.log("Validation result object:", errors)
+  console.log("Error messages (if any):", errors.array())
+  /* ================== END TEMPORARY DEBUG ================= */
+
+
   if (!errors.isEmpty()) {
-    const nav = await utilities.getNav()
-    res.render("account/register", {
+    const nav = await utilities.getNav() // keep site nav available to layout
+
+    return res.render("account/register", {
       title: "Register",
       nav,
-      errors: errors.array(),
+      errors, // <-- pass the whole result object (DO NOT use errors.array() here)
       account_firstname: req.body.account_firstname,
       account_lastname: req.body.account_lastname,
       account_email: req.body.account_email,
     })
-    return
   }
+
+  // No validation errors → continue to controller
+  console.log("Validation passed — proceeding to controller.") // TEMPORARY DEBUG
   next()
 }
 
