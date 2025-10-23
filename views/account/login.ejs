@@ -8,7 +8,7 @@
 <section class="card auth-card">
   <h2>Account Login</h2>
   <div class="auth-card-wrapper">
-    <form id="loginForm" class="form auth-form" action="/account/login" method="post" novalidate>
+    <form id="loginForm" class="form auth-form" action="/account/login" method="post">
       <div class="form-row">
         <label for="account_email">Email:</label>
         <input 
@@ -30,6 +30,8 @@
           name="account_password"
           autocomplete="current-password"
           placeholder="Your password"
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+          title="Must be at least 12 characters, include 1 capital letter, 1 number, and 1 special character"
           required
         >
       </div>
