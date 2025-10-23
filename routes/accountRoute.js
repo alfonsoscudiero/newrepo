@@ -8,6 +8,7 @@ const router = new express.Router(); //Create a new router instance
 // Utilities & Controller
 const utilities = require("../utilities/") //Import helper utilities
 const accountController = require("../controllers/accountController") //Import the account controller
+const validate = require("../utilities/account-validation") // Import validation rules
 
 /* ***************************
  *  Deliver login view  
@@ -19,7 +20,14 @@ router.get("/login", utilities.handleErrors(accountController.buildLogin)); // u
 router.get("/register", utilities.handleErrors(accountController.buildRegister));
 
 // Process registration (POST) — this receives the form data from /account/register
-router.post("/register",utilities.handleErrors(accountController.registerAccount)); // <-- controller will handle saving/validation
+router.post(
+  "/register",
+  validate.registrationRules(),     // run validation checks
+  validate.checkRegData,            // handle validation result
+  utilities.handleErrors(accountController.registerAccount) // continue to controller
+)
 
-// Export the router so it can be used by server.js
+/* ***************************
+ *  Export the router so it can be used by server.js
+ * ************************** */
 module.exports = router
