@@ -48,3 +48,25 @@ validate.registrationRules = () => {
       ),
   ]
 }
+
+/* ******************************
+ * Check data and return errors or continue
+ * ****************************** */
+validate.checkRegData = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav()
+    res.render("account/register", {
+      title: "Register",
+      nav,
+      errors: errors.array(),
+      account_firstname: req.body.account_firstname,
+      account_lastname: req.body.account_lastname,
+      account_email: req.body.account_email,
+    })
+    return
+  }
+  next()
+}
+
+module.exports = validate
