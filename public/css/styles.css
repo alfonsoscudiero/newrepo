@@ -591,6 +591,20 @@ footer .copyright {
     line-height: 1.4;
 }
 
+/* Server-side validation messages */
+.notice {
+    color: #933e01;
+    list-style-type: disc;
+    margin: 1rem 0;
+}
+
+.notice li {
+    margin-left: 1rem;
+    line-height: 1.4;
+    font-size: var(--font-size-small-screen);
+}
+
+
 /* ***************************
  *  ====== Larger screens ======   
  * ************************** */
