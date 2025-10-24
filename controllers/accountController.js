@@ -8,6 +8,9 @@ const utilities = require("../utilities");
 // controllers/accountController.js
 const accountModel = require("../models/account-model") // model to save account data
 
+// bcryptjs for password hashing
+const bcrypt = require("bcryptjs")
+
 
 /* ****************************************
  *  Deliver login view
@@ -50,20 +53,38 @@ async function registerAccount(req, res) {
   // Extract data from the form fields
   const { account_firstname, account_lastname, account_email, account_password } = req.body
 
-  // Send the data to the account model to insert into the DB
+/* ****************************************
+ *  Hash the password before storing in the DB
+ * **************************************** */
+  let hashedPassword
+  try {
+    // Generate a secure hash of the password with 10 salt rounds.
+    hashedPassword = bcrypt.hashSync(account_password, 10)
+  } catch (error) {
+    // If an error occurs while hashing, show a user-friendly message.
+    req.flash("notice", "Sorry, there was an error processing the registration.")
+    return res.status(500).render("account/register", {
+      title: "Registration",
+      nav,
+      errors: null,
+    })
+  }
+
+
+  // Insert the new account using the hashed password
   const regResult = await accountModel.registerAccount(
     account_firstname,
     account_lastname,
     account_email,
-    account_password
+    hashedPassword
   )
 
-  // 🔎 Always show basic shape
-  console.log("register result -> type:", typeof regResult, "rowCount:", regResult?.rowCount)
-  // 🔎 If the model returned an error message string, print it so we know the cause
-  if (typeof regResult === "string") {
-    console.log("register model error ->", regResult)
-  }
+  // Always show basic shape - Debug
+  // console.log("register result -> type:", typeof regResult, "rowCount:", regResult?.rowCount)
+  // If the model returned an error message string, print it so we know the cause
+  // if (typeof regResult === "string") {
+  //   console.log("register model error ->", regResult)
+  // }
 
   // Handle success/failure directly
   if (regResult && regResult.rowCount > 0) {
