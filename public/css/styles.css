@@ -342,7 +342,7 @@ footer .copyright {
 
 .errors h1 {
     font-size: 2.2rem;
-    color: #bb5811;
+    color: #df6915;
     font-weight: 700;
 }
 
@@ -452,7 +452,7 @@ footer .copyright {
 
 /* Flash Message */
 .notice {
-    color: #bb5811;
+    color: #df6915;
     font-weight: 600;
     list-style: none;
 }
