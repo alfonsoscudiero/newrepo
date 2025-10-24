@@ -2,7 +2,6 @@
  * views/account/register.ejs
  * Registration page with server-side validation
  * *************************************** -->
-
 <h1><%= title %></h1>
 
 <!-- Flash message (renders only if something was sent) -->
@@ -36,6 +35,7 @@
           name="account_firstname"   
           placeholder="Enter your first name"
           value="<%= typeof account_firstname !== 'undefined' ? account_firstname : '' %>"
+          value="<%= locals.account_firstname %>"
           required
         >
       </div>
@@ -49,6 +49,7 @@
           name="account_lastname"    
           placeholder="Enter your last name"
           value="<%= typeof account_lastname !== 'undefined' ? account_lastname : '' %>"
+          value="<%= locals.account_lastname %>"
           required
         >
       </div>
@@ -63,6 +64,7 @@
           placeholder="youremail@example.com"
           autocomplete="username"
           value="<%= typeof account_email !== 'undefined' ? account_email : '' %>"
+          value="<%= locals.account_email %>"
           required
         >
       </div>
