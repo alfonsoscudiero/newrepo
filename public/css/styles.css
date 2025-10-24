@@ -9,6 +9,8 @@
     --ink: #000000;
     --bg: #f7f8f9;
     --wh: #ffffff;
+    --or: #b84d00;
+    --bright-or : #ff6a00;
     --font-size-small-screen: 1rem;
     --font-size-large-screen: 1.3rem;
 }
@@ -342,7 +344,7 @@ footer .copyright {
 
 .errors h1 {
     font-size: 2.2rem;
-    color: #df6915;
+    color: var(--or);
     font-weight: 700;
 }
 
@@ -390,7 +392,7 @@ footer .copyright {
 
 .errors a:hover {
     background-color: var(--c-600);
-    color: white;
+    color: var(--wh);
 }
 
 /* Vehicle Details */
@@ -452,7 +454,7 @@ footer .copyright {
 
 /* Flash Message */
 .notice {
-    color: #df6915;
+    color: var(--or);
     font-weight: 600;
     list-style: none;
 }
@@ -510,7 +512,7 @@ footer .copyright {
 }
 
 .form-row input:focus {
-    outline: 3px solid #ff974d;
+    outline: 3px solid var(--bright-or);
 }
 
 .form-row label {
@@ -548,8 +550,8 @@ footer .copyright {
 
 .btn:hover {
     border-style: solid;
-    border-color: #bb5811;
-    color: #bb5811;
+    border-color: var(--bright-or);
+    color: var(--or);
 }
 
 .create-account {
@@ -595,10 +597,20 @@ footer .copyright {
 .notice {
     display: block;
     width: 92%;    
-    max-width: 500px;  
-    color: #ff974d;
+    /* max-width: 500px;   */
+    color: var(--or);
     list-style-type: disc;
-    /* margin: 1rem 0; */
+    text-align: left;
+    padding-left: 0;
+}
+
+
+.notice-registration {
+    display: block;
+    width: 92%;    
+    max-width: 500px;  
+    color: var(--bright-or);
+    list-style-type: disc;
     text-align: left;
     padding-left: 0;
 }
@@ -608,7 +620,6 @@ footer .copyright {
     line-height: 1.4;
     font-size: var(--font-size-small-screen);
 }
-
 
 /* ***************************
  *  ====== Larger screens ======   
