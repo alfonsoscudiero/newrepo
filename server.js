@@ -12,6 +12,7 @@ const app = express();
 const session = require("express-session"); //express-session
 const pool = require('./database/'); // Postgres pool
 const bodyParser = require("body-parser"); //// Parse JSON & 
+
 // HTML form bodies
 // Controllers and Utilities
 const static = require('./routes/static');
@@ -20,7 +21,6 @@ const inventoryRoute = require('./routes/inventoryRoute');
 const utilities = require('./utilities/');
 // Enable account routes (handles /account/* paths like /account/login) - Module 05
 const accountRoute = require("./routes/accountRoute");
-
 
 /* ***********************
  * View Engine and Templates
@@ -33,8 +33,7 @@ app.set('layout', './layouts/layout'); // not at views root
  * Middleware
  * ************************/
 
-// This sets up Sessions using express-session
-// and stores session data in PostgreSQL database
+// This sets up Sessions using express-session and stores session data in PostgreSQL database
 app.use(session({ //invokes the app.use() function
     store: new (require('connect-pg-simple')(session))({ //where the session data will be stored
         createTableIfMissing: true, // creates 'session' table automatically if it doesn't exist
@@ -65,49 +64,34 @@ app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-
 /* ***********************
  * Routes
  *************************/
-app.use(static); // loads static content routes
-// app.get('/', baseController.buildHome);
-//CHANGED: wrap home route with error handler so async errors flow to global handler
-app.get('/', utilities.handleErrors(baseController.buildHome));
-app.use('/inv', inventoryRoute); // Inventory feature routes
-
+// // loads static content routes
+app.use(static); 
+// Keep using the utilities wrapper so async errors hit the handler below
+app.get('/', utilities.handleErrors(baseController.buildHome))
+// Inventory feature routes
+app.use('/inv', inventoryRoute); 
 // Module 05 - Anything defined in routes/accountRoute.js is now reachable under /account 
 app.use("/account", accountRoute); //Account route
 
-
-// File Not Found Route (404) - must be last route in list
-// — If nothing else matched, we "intentionally" pass a 404 error object
-//   into the pipeline so the Express Error Handler above renders our view.
-app.use(async (req, res, next) => {
-    next({ status: 404, message: 'Sorry, we appear to have lost that page.' });
-});
-
 /* ***********************
- * Express Error Handler - Global error handler
- * Place after all other middleware
- * — This runs only when `next()` receives an error object,
- *   or an error is thrown in an async route wrapped to pass errors along.
+ * Express Error Handler - Global error handler (INLINE)
+ * Place after all other middleware.
+ * This runs only when next(err) is called or an async route throws.
  *************************/
-
 app.use(async (err, req, res, next) => {
-    // CHANGED: ensure we always have a numeric status and a safe message
-    const status = Number(err?.status) || 500;
+    // ensure we always have a numeric status and a safe message
+    let status = Number(err?.status) || 500;
 
-    // Custom friendly default messages
-    let message
+    let message;
     if (status === 404) {
-        message = "Oops! That page took a wrong turn 🚧"
+        message = "Oops! That page took a wrong turn";
     } else if (status >= 500) {
-        message = "Oops! Something went wrong on our side. Please try again later."
+        message = "Oops! Something went wrong on our side. Please try again later.";
     } else {
-        // For other 4xx, show the app's validation/message if present, else a default
-        message = err?.message || "Oops! Something was wrong with your request."
+        message = err?.message || "Oops! Something was wrong with your request.";
     }
 
-    // Helpful server log to see where/what failed (route + message)
-    // console.error(`Error at: "${req.originalUrl}": ${message}`);
-
-    // Try to build nav; if it fails, still show an error page.
+    // Try to build nav; if it fails, still render an error page.
     let nav = '';
     try {
         nav = await utilities.getNav();
@@ -115,10 +99,6 @@ app.use(async (err, req, res, next) => {
         console.error('Nav build failed in error handler:', navErr.message);
     }
 
-    // Dynamic page title
-    const title = `${status} ${status === 404 ? "Not Found" : status >= 500 ? "Server Error" : "Error"}`
-
-    // Render the error view with all necessary data
     res.status(status).render('errors/error', {
         title: status === 404 ? 'Not Found' : 'Server Error',
         status,

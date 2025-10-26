@@ -1,3 +1,4 @@
+// utilities/index.js
 // Bring in the inventory model so we can access the database functions.
 // We will use it here to get the list of all classifications.
 const invModel = require("../models/inventory-model")
@@ -47,18 +48,6 @@ Util.getNav = async function (req, res, next) {
   // Return the completed HTML string back to the controller
   return list
 }
-
-/* ****************************************
- * Middleware For Handling Errors
- * Wrap other function in this for 
- * General Error Handling
- **************************************** */
-Util.handleErrors = fn => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next) 
-
-// Export the Util object so other files (like controllers)
-// can use getNav() when they need to build the navigation bar.
-module.exports = Util
 
 /* **************************************
 * Build the classification view HTML
@@ -114,3 +103,17 @@ Util.buildClassificationGrid = async function(data){
   // Return the HTML string to the controller so it can render the view
   return grid
 }
+
+/* ****************************************
+ * Middleware For Handling Errors
+ * pass rejected Promises to Express error handling.
+ * app.get("/", utilities.handleErrors(baseController.buildHome))
+ **************************************** */
+Util.handleErrors = fn => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next) 
+
+/* ****************************************
+ * Export all utility functions
+ * so controllers and server.js can use them.
+ **************************************** */
+module.exports = Util

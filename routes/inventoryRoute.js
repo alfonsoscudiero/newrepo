@@ -1,18 +1,25 @@
-// Needed Resources
+// routes/inventoryRoute.js
+
+// Inventory feature routes
 const express = require("express")
 const router = new express.Router()
+
+// Controllers & Utilities
 const invController = require("../controllers/invController")
+const utilities = require("../utilities") 
 
 // Route to build inventory by classification view
-router.get("/type/:classificationId", invController.buildByClassificationId)
+// Example: /inv/type/1
+router.get (
+  "/type/:classificationId",
+  utilities.handleErrors(invController.buildByClassificationId)
+)
 
 // Route to build a single vehicle detail view
-// router.get("/detail/:inv_id", invController.buildVehicleDetail)
-
-// Route to build a single vehicle detail view
-router.get("/detail/:inv_id", (req, res, next) => {
-  console.log("[ROUTE] /inv/detail inv_id =", req.params.inv_id);
-  next();
-}, invController.buildVehicleDetail);
+// Example: /inv/detail/10
+router.get(
+  "/detail/:inv_id",
+  utilities.handleErrors(invController.buildVehicleDetail)
+)
 
 module.exports = router
