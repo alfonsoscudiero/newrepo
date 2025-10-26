@@ -269,11 +269,21 @@ footer {
     margin-top: 2rem;
     background: var(--c-900);
     color: var(--wh);
-    text-align: center;
+    text-align: left;
     padding: 1rem;
 }
 
-footer .copyright {
+#error-link {
+    color: var(--bright-or);
+    text-decoration: none !important;
+}
+
+#error-link:hover {
+    color: var(--c-100);
+}
+
+
+footer p {
     margin: 0;
     padding: 0.5rem;
 }
@@ -368,8 +378,6 @@ footer .copyright {
     height: auto;
     margin: 2rem auto;
     display: block;
-    /* border-radius: 1rem; */
-    /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
 }
 
 .fun-error p {
