@@ -22,4 +22,9 @@ router.get(
   utilities.handleErrors(invController.buildVehicleDetail)
 )
 
+// Route to build the Home Page of the inventory section
+router.get(
+  "/", utilities.handleErrors(invController.buildManagementView)
+)
+
 module.exports = router
