@@ -38,7 +38,7 @@ body {
     color: var(--ink);
     background: var(--bg);
     line-height: 1.6;
-    min-height: 100%;
+    height: 100vh;
 }
 
 /* Main */
@@ -627,6 +627,28 @@ footer p {
     /* margin-left: 0.25rem; */
     line-height: 1.4;
     font-size: var(--font-size-small-screen);
+}
+
+
+/* Inventory Home Page */
+.management-links {
+    list-style: none;
+    padding: 0;
+}
+
+.management-links li {
+    margin: 0.5rem 0;
+}
+
+.link-btn {
+    color: var(--c-700);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-btn:hover {
+    color: var(--or);
+    text-decoration: underline;
 }
 
 /* ***************************
