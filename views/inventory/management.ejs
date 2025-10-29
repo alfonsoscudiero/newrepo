@@ -1,0 +1,15 @@
+<% /* =============================================
+  views/inventory/management.ejs
+  Task 1: Vehicle Management landing page
+  ============================================= */ %>
+
+<h1><%= title %></h1>
+
+<!-- Flash message area  -->
+<%- messages() %>
+
+<!-- Links to controller routes  -->
+<ul class="management-links">
+  <li><a href="/inv/add-classification" class="link-btn">Add New Classification</a></li>
+  <li><a href="/inv/add-inventory" class="link-btn">Add New Vehicle</a></li>
+</ul>
