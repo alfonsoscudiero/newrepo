@@ -9,6 +9,26 @@ const utilities = require("../utilities/")
 const invCont = {}
 
 /* *******************************************************
+ * Build the Vehicle Management view  (Assignment 04)
+ * Route: /inv/
+ * ******************************************************* */
+invCont.buildManagementView = async function (req, res) {
+  try {
+    // 1) Build the nav menu (Home + Classifications)
+    const nav = await utilities.getNav()
+
+    // 2) Render the management page view
+    res.render("inventory/management", {
+      title: "Vehicle Management",
+      nav,
+    })
+  } catch (error) {
+    console.error("[CTRL] Error building management view:", error)
+    res.status(500).send("Server error while loading management page")
+  }
+}
+
+/* *******************************************************
  * Build inventory by classification view
  * Route example: /inv/type/:classificationId
  * ******************************************************* */
@@ -118,8 +138,11 @@ invCont.buildVehicleDetail = async function (req, res, next) {
   }
 }
 
+
+
 // Export this controller so routes can call its functions
 module.exports = {
   buildByClassificationId: invCont.buildByClassificationId,
   buildVehicleDetail: invCont.buildVehicleDetail,
+  buildManagementView: invCont.buildManagementView, 
 }
