@@ -1,0 +1,45 @@
+<% /* =============================================
+  views/inventory/add-classification.ejs
+  Module 07 Assignment 04 Task 2 
+  Add Classification Form
+  ============================================= */ %>
+
+<h1><%= title %></h1>
+
+<!-- Flash message  -->
+<%- messages() %>
+
+<section class="card auth-card">
+  <h2>New Classification</h2>
+  <div class="auth-card-wrapper">
+    <!-- *******************************
+    Display server-side validation errors
+    ************************************* -->
+    <% if (locals.errors && errors.length) { %>
+      <ul class="notice-registration">
+        <% errors.forEach(e => { %><li><%= e.msg %></li><% }) %>
+      </ul>
+    <% } %>
+    <!-- *******************************
+    Add Classification Form
+    ******************************* -->
+    <form id="classificationForm" class="form auth-form" action="/inv/add-classification" method="post">
+      <div class="form-row">
+        <label for="classification_name">Classification Name</label>
+        <input 
+          type="text"
+          id="classification_name"
+          name="classification_name"
+          minlength="1"
+          maxlength="50"
+          pattern="^[A-Za-z]+$"
+          title="Use letters only; no spaces, numbers, or special characters."
+          value="<%= locals.classification_name %>"
+          placeholder="Name Must be Alphabetic Character Only, e.g. ClassicCars"
+          required
+        >
+      </div>
+      <button type="submit" class="btn primary">ADD CLASSIFICATION</button>
+    </form>
+  </div>
+</section>
