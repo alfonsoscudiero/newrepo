@@ -12,7 +12,7 @@ const invCont = {}
  * Build the Vehicle Management view  (Assignment 04)
  * Route: /inv/
  * ******************************************************* */
-invCont.buildManagementView = async function (req, res) {
+invCont.buildManagementView = async function (req, res, next) {
   try {
     // 1) Build the nav menu (Home + Classifications)
     const nav = await utilities.getNav()
@@ -23,15 +23,17 @@ invCont.buildManagementView = async function (req, res) {
       nav,
     })
   } catch (error) {
+    // Log the error for debugging
     console.error("[CTRL] Error building management view:", error)
-    res.status(500).send("Server error while loading management page")
+    // Pass to global error handler
+    next(error)
   }
 }
 
 /* *******************************************************
  * Build inventory by classification view
  * Route example: /inv/type/:classificationId
- * ******************************************************* */
+ * **************************************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   try {
     // 1) Get the id from the route
@@ -79,7 +81,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
 /* *******************************************************
  * Build single vehicle detail view
  * Route example: /inv/detail/:inv_id
- * ******************************************************* */
+ ******************************************************** */
 invCont.buildVehicleDetail = async function (req, res, next) {
   try {
     const inv_id_raw = req.params.inv_id
@@ -105,7 +107,6 @@ invCont.buildVehicleDetail = async function (req, res, next) {
       // Otherwise behave correctly with a 404
       return next({ status: 404, message: "Vehicle not found." })
     }
-    // ====================================================================
 
     // 2) Nav + computed fields
     const nav = await utilities.getNav()
@@ -138,11 +139,66 @@ invCont.buildVehicleDetail = async function (req, res, next) {
   }
 }
 
+/* *******************************************************
+ * Build Add Classification form view (Assignment 04 - Task 2)
+ * Route: /inv/add-classification  (GET)
+ * ************************************************** */
+invCont.buildAddClassification = async function (req, res, next) {
+  try {
+    const nav = await utilities.getNav()
 
+    res.render("inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      // Provide defaults so the view can be 'sticky' after errors
+      errors: null,
+      classification_name: "",
+    })
+  } catch (error) {
+    console.error("[CTRL] Error delivering Add Classification view:", error)
+    next(error)
+  }
+}
+
+/* *******************************************************
+ * Process Add Classification (POST)
+ * Route: /inv/add-classification
+ * Validation has already run
+ * ************************************************** 
+ * */
+invCont.addClassification = async function (req, res, next) {
+  // 1) Build navigation for the layout
+  let nav = await utilities.getNav()
+  // 2) Extract data from the new classification form
+  const { classification_name } = req.body
+  console.log("[CTRL] addClassification:", classification_name)
+
+  try {
+    // 3) Insert the new classification
+    const inserted = await invModel.addClassification(classification_name)
+    console.log("[CTRL] addClassification -> inserted:", inserted)
+    // Success message
+    req.flash("notice", `The classification "${classification_name}" was successfully added.`)
+    // Redirect to the inventory management page
+    res.redirect("/inv")
+  } catch (error) {
+    console.error("[CTRL] Error adding classification:", error)
+    // If an error occurs
+    req.flash("notice", "Sorry, there was an error adding the classification.")
+    return res.status(500).render("inventory/add-classification", {
+      title: "Add Classification",
+      nav,
+      errors: null,
+      classification_name, 
+    })
+  }
+}
 
 // Export this controller so routes can call its functions
 module.exports = {
   buildByClassificationId: invCont.buildByClassificationId,
   buildVehicleDetail: invCont.buildVehicleDetail,
   buildManagementView: invCont.buildManagementView, 
+  buildAddClassification: invCont.buildAddClassification, //GET
+  addClassification: invCont.addClassification, //POST
 }

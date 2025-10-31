@@ -1,13 +1,43 @@
 // models/inventory-model.js
+/* ***************************
+ *  Inventory Model
+ * ************************** */
 const pool = require('../database/');
 
-/* ***************************
- *  Get all classification data
- * ************************** */
+/* ****************************************
+ *  Get all classification data (getNav)
+ * ************************************** */
 async function getClassifications() {
     return await pool.query(
         'SELECT * FROM public.classification ORDER BY classification_name'
     );
+}
+
+/* ***************************
+ *  Module 07 - Assignment 04 Task 2
+ *  Handles database operations for "Add Classification"
+ * ************************** */
+async function addClassification(name) {
+    try {
+    const sql = `
+        INSERT INTO public.classification (classification_name)
+        VALUES ($1)
+        RETURNING classification_id
+        `
+    // Parameterized query
+    const result = await pool.query(sql, [name]);
+    // Debug
+    console.log("[MODEL] addClassification id:", result?.rows?.[0]?.classification_id);
+    // Return classification Object
+    return {
+        rowCount: result.rowCount,
+        id: result.rows?.[0]?.classification_id,
+    };
+    } catch (error) {
+        // Debug
+        console.error("[MODEL] addClassification error:", error)
+        throw error
+    }
 }
 
 /* ***************************
@@ -70,6 +100,7 @@ Example (keep your existing exports and just include this name too):
 // Export both functions together
 module.exports = {
     getClassifications, 
+    addClassification,
     getInventoryByClassificationId,
     getVehicleById, 
 };
