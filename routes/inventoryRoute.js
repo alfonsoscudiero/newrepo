@@ -5,26 +5,49 @@ const express = require("express")
 const router = new express.Router()
 
 // Controllers & Utilities
-const invController = require("../controllers/invController")
-const utilities = require("../utilities") 
+const utilities = require("../utilities")
+const invController = require("../controllers/invController") 
+const invValidate = require("../utilities/inventory-validation") 
+
+// Route to build the Home Page of the inventory section
+// GET /inv/
+router.get(
+  "/", utilities.handleErrors(invController.buildManagementView)
+)
 
 // Route to build inventory by classification view
-// Example: /inv/type/1
+// GET /inv/type/:classificationId
 router.get (
   "/type/:classificationId",
   utilities.handleErrors(invController.buildByClassificationId)
 )
 
 // Route to build a single vehicle detail view
-// Example: /inv/detail/10
+// GET /inv/detail/:inv_id
 router.get(
   "/detail/:inv_id",
   utilities.handleErrors(invController.buildVehicleDetail)
 )
 
-// Route to build the Home Page of the inventory section
+// ----------------------------------------------
+// Route to deliver the "Add Classification" form
+// GET /inv/add-classification
+// ----------------------------------------------
 router.get(
-  "/", utilities.handleErrors(invController.buildManagementView)
+  "/add-classification",
+  utilities.handleErrors(invController.buildAddClassification)
+)
+
+// ----------------------------------------------
+// Add Classification  - form submission (POST)
+// POST /inv/add-classification 
+// ----------------------------------------------
+router.post(
+  "/add-classification", 
+  // Runs validation before controller
+  invValidate.classificationRules(),
+  invValidate.checkClassificationData,
+  utilities.handleErrors(invController.addClassification) // POST handler
 )
 
 module.exports = router

@@ -73,6 +73,7 @@ app.use('/inv', inventoryRoute);
 // Module 05 - Anything defined in routes/accountRoute.js is now reachable under /account 
 app.use("/account", accountRoute); //Account route
 
+
 /* ***********************
  * Express Error Handler - Global error handler (INLINE)
  * Place after all other middleware.

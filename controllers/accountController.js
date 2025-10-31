@@ -70,7 +70,6 @@ async function registerAccount(req, res) {
     })
   }
 
-
   // Insert the new account using the hashed password
   const regResult = await accountModel.registerAccount(
     account_firstname,
