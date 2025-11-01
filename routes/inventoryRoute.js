@@ -50,4 +50,14 @@ router.post(
   utilities.handleErrors(invController.addClassification) // POST handler
 )
 
+// ----------------------------------------------
+// Route to deliver the "Add Invnetory" form
+// GET /inv/add-inventory 
+// ----------------------------------------------
+router.get(
+  "/add-inventory",
+  utilities.handleErrors(invController.buildAddInventory)
+)
+
+
 module.exports = router
