@@ -81,16 +81,6 @@ invValidate.checkClassificationData = async (req, res, next) => {
       .notEmpty()
       .withMessage("A description is required."),
 
-    body("inv_image")
-      .trim()
-      .notEmpty()
-      .withMessage("Image Path is required."),
-
-    body("inv_thumbnail")
-      .trim()
-      .notEmpty()
-      .withMessage("Thumbnail Path is required."),
-
     body("inv_price")
       .trim()
       .toFloat()
@@ -105,6 +95,9 @@ invValidate.checkClassificationData = async (req, res, next) => {
 
     body("inv_miles")
       .trim()
+      .matches(/^\d+$/) // Ensures only digits allowed (no commas/spaces)
+      .withMessage("Miles must contain digits only (no commas or spaces).")
+      .bail()
       .toInt()
       .isInt({ min: 0 })
       .withMessage("Miles must be digits only."),
