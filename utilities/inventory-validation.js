@@ -2,11 +2,13 @@
 // Required modules
 const utilities = require(".")
 const { body, validationResult } = require("express-validator")
+const invModel = require("../models/inventory-model") // Needed to repopulate dropdowns and validate classification_id exists
 
 const invValidate = {}
 
 /* **************************************
  *  Classification Name Validation Rules
+ * Assignment 04 - Task 02
  * ************************************** */
 invValidate.classificationRules = () => {
   return [
@@ -30,7 +32,7 @@ invValidate.checkClassificationData = async (req, res, next) => {
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav()
 
-    return res.render("inventory/add-classification", {
+    return res.status(400).render("inventory/add-classification", {
       title: "Add Classification",
       nav,
       errors: errors.array(), // convert to array for EJS
@@ -38,6 +40,107 @@ invValidate.checkClassificationData = async (req, res, next) => {
     })
   }
   // No errors → continue to controller (insert into DB)
+  next()
+}
+
+/* ******************************************************
+ *  Classification Name Validation Rules - Add Inventory
+ * Assignment 04 - Task 03
+ * **************************************************** */
+  invValidate.inventoryRules = () => {
+  return [
+    body("classification_id")
+      .trim()
+      .toInt()
+      .isInt({ min: 1 })
+      .notEmpty()
+      .withMessage("Please choose a classification.")
+      .bail()
+      .custom(async (val) => {
+        // Ask the model for that specific classification
+        const result = await invModel.getClassificationById(val)
+        // If not found, show this error
+        if (!result || result.rows.length === 0) {
+          throw new Error("Selected classification does not exist.")
+        }
+        return true // continue
+      }),
+
+    body("inv_make")
+      .trim()
+      .isLength({ min: 3 })
+      .withMessage("Make must be at least 3 characters."),
+
+    body("inv_model")
+      .trim()
+      .isLength({ min: 3 })
+      .withMessage("Model must be at least 3 characters."),
+
+    body("inv_description")
+      .trim()
+      .notEmpty()
+      .withMessage("A description is required."),
+
+    body("inv_image")
+      .trim()
+      .notEmpty()
+      .withMessage("Image Path is required."),
+
+    body("inv_thumbnail")
+      .trim()
+      .notEmpty()
+      .withMessage("Thumbnail Path is required."),
+
+    body("inv_price")
+      .trim()
+      .toFloat()
+      .isFloat({ gt: 0 })
+      .withMessage("Price must be a number greater than 0."),
+
+    body("inv_year")
+      .trim()
+      .toInt()
+      .isInt({ min: 1900, max: 9999 })
+      .withMessage("Year must be a 4-digit year."),
+
+    body("inv_miles")
+      .trim()
+      .toInt()
+      .isInt({ min: 0 })
+      .withMessage("Miles must be digits only."),
+
+    body("inv_color")
+      .trim()
+      .notEmpty()
+      .withMessage("The vehicle's color is required."),
+  ]
+}
+
+// If validation fails
+invValidate.checkInventoryData = async (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav()
+    const classifications = await invModel.getClassifications() // for dropdown
+
+    return res.status(400).render("inventory/add-inventory", {
+      title: "Add Vehicle",
+      nav,
+      errors: errors.array(),
+      classifications,
+      // Sticky values
+      classification_id: req.body.classification_id,
+      inv_make: req.body.inv_make,
+      inv_model: req.body.inv_model,
+      inv_description: req.body.inv_description,
+      inv_image: req.body.inv_image,
+      inv_thumbnail: req.body.inv_thumbnail,
+      inv_price: req.body.inv_price,
+      inv_year: req.body.inv_year,
+      inv_miles: req.body.inv_miles,
+      inv_color: req.body.inv_color,
+    })
+  }
   next()
 }
 
