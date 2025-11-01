@@ -194,6 +194,49 @@ invCont.addClassification = async function (req, res, next) {
   }
 }
 
+/* *******************************************************
+ * Build Add Classification form view (Assignment 04 - Task 3)
+ * Route: /inv/add-classification  (GET)
+ * ************************************************** */
+invCont.buildAddInventory = async function (req, res, next) {
+  try {
+    // Top nav (existing helper)
+    const nav = await utilities.getNav()
+
+    // Fetch classifications from the DB for the dropdown
+    let classifications = []
+    // Check if the function exists before calling it
+    if (typeof invModel.getClassifications === "function") {
+      classifications = await invModel.getClassifications()
+    }
+
+    // Render view with sticky defaults and an empty error state
+    res.render("inventory/add-inventory", {
+      title: "Add Vehicle",
+      nav,
+      errors: null,
+      // Dropdown data
+      classifications,      
+      // Sticky defaults for inputs (match your EJS name attributes)
+      classification_id: "",
+      inv_make: "",
+      inv_model: "",
+      inv_description: "",
+      inv_image: "/images/vehicles/no-image.png",
+      inv_thumbnail: "/images/vehicles/no-image-tn.png",
+      inv_price: "",
+      inv_year: "",
+      inv_miles: "",
+      inv_color: "",
+    })
+  } catch (err) {
+    console.error("[invController] buildAddInventory error:", err);
+    // If an error occurs
+
+    next(err)
+  }
+}
+
 // Export this controller so routes can call its functions
 module.exports = {
   buildByClassificationId: invCont.buildByClassificationId,
@@ -201,4 +244,5 @@ module.exports = {
   buildManagementView: invCont.buildManagementView, 
   buildAddClassification: invCont.buildAddClassification, //GET
   addClassification: invCont.addClassification, //POST
+  buildAddInventory: invCont.buildAddInventory, //GET
 }
