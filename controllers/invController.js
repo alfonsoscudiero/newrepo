@@ -195,12 +195,12 @@ invCont.addClassification = async function (req, res, next) {
 }
 
 /* *******************************************************
- * Build Add Classification form view (Assignment 04 - Task 3)
- * Route: /inv/add-classification  (GET)
+ * Build Add Inventory form view (Assignment 04 - Task 3)
+ * Route: /inv/add-inventory  (GET)
  * ************************************************** */
 invCont.buildAddInventory = async function (req, res, next) {
   try {
-    // Top nav (existing helper)
+    // Build navigation for layout
     const nav = await utilities.getNav()
 
     // Fetch classifications from the DB for the dropdown
@@ -230,12 +230,111 @@ invCont.buildAddInventory = async function (req, res, next) {
       inv_color: "",
     })
   } catch (err) {
-    console.error("[invController] buildAddInventory error:", err);
+    console.error("[CTRL] buildAddInventory error:", err);
     // If an error occurs
-
     next(err)
   }
 }
+
+/* *******************************************************
+ * Build Add Inventory form view (Assignment 04 - Task 3)
+ * Route: /inv/add-inventory  (POST)
+ * Validation has already run 
+ * ************************************************** */
+invCont.addInventory = async function (req, res, next) {  
+  try {
+    // Build navigation for layout
+    const nav = await utilities.getNav()
+    // Destructure validated fields from req.body
+    const {
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+    } = req.body
+
+    // Log what was received from the form
+    console.log("[CTRL] Received form data - addInventory:")
+    console.table(req.body)
+
+    // Ensure image paths aren’t empty
+    const imagePath =
+      inv_image && String(inv_image).trim() !== ""
+        ? inv_image
+        : "/images/vehicles/no-image.png"
+
+    const thumbPath =
+      inv_thumbnail && String(inv_thumbnail).trim() !== ""
+        ? inv_thumbnail
+        : "/images/vehicles/no-image-tn.png"
+
+    // Log final payload to be inserted
+    console.log("[CTRL:addInventory] Final insert payload:", {
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      inv_image: imagePath,
+      inv_thumbnail: thumbPath,
+    })
+
+    // Insert into the database via model
+    const result = await invModel.addInventory(
+      inv_make,
+      inv_model,
+      inv_description,
+      imagePath,
+      thumbPath,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id
+    )
+
+    // Log the DB result for debugging
+    console.log("[CTRL:addInventory] DB insert result:", result)
+
+    // On success, flash message and redirect
+    req.flash("notice", "The vehicle was successfully added.")
+    res.redirect("/inv")
+  } catch (error) {
+    console.error("[CTRL:addInventory] Error:", error)
+
+    // Rebuild classification dropdown if an error occurs
+    let classifications = []
+    try {
+      if (typeof invModel.getClassifications === "function") {
+        classifications = await invModel.getClassifications()
+      }
+    } catch (e) {
+      console.warn("[CTRL] Could not reload classifications:", e)
+    }
+
+    const nav = await utilities.getNav()
+    // Render form again with sticky values for user convenience
+    return res.status(500).render("inventory/add-inventory", {
+      title: "Add Vehicle",
+      nav,
+      errors: null,
+      classifications,
+      ...req.body,
+    })
+  }
+}
+
+
+
 
 // Export this controller so routes can call its functions
 module.exports = {
@@ -245,4 +344,5 @@ module.exports = {
   buildAddClassification: invCont.buildAddClassification, //GET
   addClassification: invCont.addClassification, //POST
   buildAddInventory: invCont.buildAddInventory, //GET
+  addInventory: invCont.addInventory, // POST
 }
