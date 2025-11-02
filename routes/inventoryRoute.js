@@ -59,5 +59,17 @@ router.get(
   utilities.handleErrors(invController.buildAddInventory)
 )
 
+// ----------------------------------------------
+// Add Inventory  - submit
+// POST /inv/add-inventory 
+// ----------------------------------------------
+router.post(
+  "/add-inventory", 
+  // Runs validation before controller
+  invValidate.classificationRules(),
+  invValidate.checkClassificationData,
+  utilities.handleErrors(invController.addInventory) // POST handler
+)
+
 
 module.exports = router
