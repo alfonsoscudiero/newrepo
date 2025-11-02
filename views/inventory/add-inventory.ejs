@@ -1,0 +1,140 @@
+<% /* =============================================
+  views/inventory/add-inventory.ejs
+  Module 07 Assignment 04 Task 3
+  Add New Vehicle Form
+  ============================================= */ %>
+<h1><%= title %></h1>
+
+<!-- Flash messages -->
+<%- messages() %>
+
+<!-- Server-side validation errors -->
+<% if (locals.errors && errors.length) { %>
+  <ul class="notice-registration">
+    <% errors.forEach(e => { %><li><%= e.msg %></li><% }) %>
+  </ul>
+<% } %>
+
+<section class="card auth-card">
+  <h2>All Fields Are Required</h2>
+  <div class="auth-card-wrapper">
+    <form id="addInventoryForm" class="form auth-form" action="/inv/add-inventory" method="post">
+      <!-- Classification (dynamic dropdown) -->
+      <div class="form-row">
+        <label for="classification_id">Classification</label>
+          <select id="classification_id" name="classification_id" required>
+            <option value="" disabled selected hidden>
+              Choose a Classification &#9660;
+            </option>
+            <% classifications.rows.forEach(c => { %>
+              <option value="<%= c.classification_id %>"
+                <%= c.classification_id == classification_id ? "selected" : "" %>>
+                <%= c.classification_name %>
+              </option>
+            <% }) %>
+          </select>
+      </div>
+
+      <!-- Make -->
+      <div class="form-row">
+        <label for="inv_make">Make
+          <input
+            id="inv_make" name="inv_make" type="text"
+            minlength="3" 
+            title="Enter at least 3 characters (not just spaces)."
+            required
+            placeholder="Min of 3 characters. e.g., Honda"
+            value="<%= inv_make %>"
+          >
+        </label>
+      </div>
+
+      <!-- Model -->
+      <div class="form-row">
+        <label for="inv_model">Model</label>
+        <input
+          id="inv_model" name="inv_model" type="text"
+          minlength="3" 
+          title="Enter at least 3 characters (not just spaces)."
+          required
+          value="<%= inv_model %>"
+          placeholder="Min of 3 characters. e.g., Civic"
+        >
+      </div>
+
+      <!-- Description -->
+      <div class="form-row">
+        <label for="inv_description">Description</label>
+        <textarea
+          id="inv_description" name="inv_description" rows="4"
+          minlength="5" 
+          required
+          placeholder="Brief description of the vehicle">
+          <%= inv_description %>
+        </textarea>
+      </div>
+
+      <!-- Image Path -->
+      <div class="form-row">
+        <label for="inv_image">Image Path</label>
+        <input
+          id="inv_image" name="inv_image" type="text" 
+          value="/images/vehicles/no-image.png"          
+        >
+      </div>
+
+      <!-- Thumbnail Path -->
+      <div class="form-row">
+        <label for="inv_thumbnail">Thumbnail Path</label>
+        <input
+          id="inv_thumbnail" name="inv_thumbnail" type="text" 
+          value="/images/vehicles/no-image-tn.png"
+          readonly
+        >
+      </div>
+
+      <!-- Price -->
+      <div class="form-row">
+        <label for="inv_price">Price</label>
+        <input
+          id="inv_price" name="inv_price" type="number" step="0.01" min="0.01" required
+          value="<%= inv_price %>"
+          placeholder="Decimal or integer"
+        >
+      </div>
+
+      <!-- Year -->
+      <div class="form-row">
+        <label for="inv_year">Year</label>
+        <input
+          id="inv_year" name="inv_year" type="number" min="1900" max="9999" required
+          value="<%= inv_year %>"
+          placeholder="4-digit year"
+        >
+      </div>
+
+      <!-- Miles -->
+      <div class="form-row">
+        <label for="inv_miles">Miles</label>
+        <input
+          id="inv_miles" name="inv_miles" type="number" min="0" step="1" required
+          value="<%= inv_miles %>"
+          placeholder="Digits only"
+        >
+      </div>
+
+      <!-- Color -->
+      <div class="form-row">
+        <label for="inv_color">Color</label>
+        <input
+          id="inv_color" name="inv_color" type="text" required
+          value="<%= inv_color %>"
+          placeholder="e.g., Red"
+          title="The vehicle's color is required."
+        >
+      </div>
+
+      <button type="submit" class="btn primary">ADD VEHICLE</button>
+    </form>
+  </div>
+</section>
