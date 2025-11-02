@@ -50,10 +50,11 @@ invValidate.checkClassificationData = async (req, res, next) => {
   invValidate.inventoryRules = () => {
   return [
     body("classification_id")
-      .trim()
+      .notEmpty()
+      .withMessage("Please choose a classification.")
+      .bail()
       .toInt()
       .isInt({ min: 1 })
-      .notEmpty()
       .withMessage("Please choose a classification.")
       .bail()
       .custom(async (val) => {
@@ -109,7 +110,10 @@ invValidate.checkClassificationData = async (req, res, next) => {
   ]
 }
 
-// If validation fails
+/* **************************************
+ *  Add-Inventory Data Checker
+ *  Re-render with errors and sticky values
+ * ************************************** */
 invValidate.checkInventoryData = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
