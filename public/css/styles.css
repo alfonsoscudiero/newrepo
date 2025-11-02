@@ -527,13 +527,13 @@ footer p {
     max-width: 500px;
 }
 
-.auth-form :is(input, select):required {
+.auth-form :is(input, select, textarea):required {
     box-shadow: inset -6px 0 0 var(--bright-or);
     border-radius: 0.5rem;
     transition: box-shadow 0.3s ease;
 }
 
-.auth-form :is(input, select):required:valid {
+.auth-form :is(input, select, textarea):required:valid {
     box-shadow: inset -6px 0 0 #00b5d8; 
 }
 .form-row {
@@ -650,14 +650,15 @@ footer p {
     display: block;
     width: 92%;    
     max-width: 500px;  
-    color: var(--bright-or);
-    list-style-type: disc;
+    color: var(--or);
+    list-style-type: none;
     text-align: left;
     padding-left: 0;
+    font-weight: 600;
 }
 
 .notice li {
-    /* margin-left: 0.25rem; */
+    margin-left: 0.25rem;
     line-height: 1.4;
     font-size: var(--font-size-small-screen);
 }

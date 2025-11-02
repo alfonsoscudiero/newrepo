@@ -9,17 +9,18 @@
 <!-- Flash message  -->
 <%- messages() %>
 
+<!-- *******************************
+Display server-side validation errors
+************************************* -->
+<% if (locals.errors && errors.length) { %>
+  <ul class="notice-registration">
+    <% errors.forEach(e => { %><li><%= e.msg %></li><% }) %>
+  </ul>
+<% } %>
+
 <section class="card auth-card">
   <h2>New Classification</h2>
   <div class="auth-card-wrapper">
-    <!-- *******************************
-    Display server-side validation errors
-    ************************************* -->
-    <% if (locals.errors && errors.length) { %>
-      <ul class="notice-registration">
-        <% errors.forEach(e => { %><li><%= e.msg %></li><% }) %>
-      </ul>
-    <% } %>
     <!-- *******************************
     Add Classification Form
     ******************************* -->
