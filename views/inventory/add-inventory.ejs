@@ -67,11 +67,8 @@
         <label for="inv_description">Description</label>
         <textarea
           id="inv_description" name="inv_description" rows="4"
-          minlength="5" 
-          required
-          placeholder="Brief description of the vehicle">
-          <%= inv_description %>
-        </textarea>
+          minlength="5" required
+          placeholder="Brief description of the vehicle"><%= (inv_description || "").trim() %></textarea>
       </div>
 
       <!-- Image Path -->
