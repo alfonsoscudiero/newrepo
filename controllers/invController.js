@@ -318,7 +318,7 @@ invCont.addInventory = async function (req, res, next) {
         classifications = await invModel.getClassifications()
       }
     } catch (e) {
-      console.warn("[CTRL] Could not reload classifications:", e)
+      console.error("[CTRL] Could not reload classifications:", e)
     }
 
     const nav = await utilities.getNav()

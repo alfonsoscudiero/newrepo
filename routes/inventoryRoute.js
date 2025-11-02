@@ -64,12 +64,10 @@ router.get(
 // POST /inv/add-inventory 
 // ----------------------------------------------
 router.post(
-  "/add-inventory", 
-  // Runs validation before controller
-  invValidate.classificationRules(),
-  invValidate.checkClassificationData,
-  utilities.handleErrors(invController.addInventory) // POST handler
+  "/add-inventory",
+  invValidate.inventoryRules(),
+  invValidate.checkInventoryData,  // <-- use the actual name
+  utilities.handleErrors(invController.addInventory)
 )
-
 
 module.exports = router
