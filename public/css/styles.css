@@ -645,7 +645,6 @@ footer p {
     padding-left: 0;
 }
 
-
 .notice-registration {
     display: block;
     width: 92%;    
@@ -655,6 +654,7 @@ footer p {
     text-align: left;
     padding-left: 0;
     font-weight: 600;
+    font-size: var(--font-size-small-screen);
 }
 
 .notice li {
@@ -853,6 +853,11 @@ footer p {
     .fun-error p {
         font-size: var(--font-size-large-screen);
     }
+
+    .notice-registration {
+    max-width: 700px;  
+    font-size: var(--font-size-large-screen);
+}
 
     /* Vehicle Details */
     #inv-detail h1 {
