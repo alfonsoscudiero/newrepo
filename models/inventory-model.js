@@ -99,7 +99,7 @@ async function getVehicleById(inv_id) {
 async function getClassificationById(classification_id) {
     try {
         const id = Number(classification_id);
-        console.log("[MODEL] getClassificationById =", id);
+        console.log("[MODEL] getClassificationById Id number =", id);
 
         const sql = `
             SELECT *
@@ -108,13 +108,15 @@ async function getClassificationById(classification_id) {
             `
         const result = await pool.query(sql, [id])
         // Debug
-        console.log("[MODEL] getClassificationById rows:", result?.rows.length || 0);
+        console.log(
+            `[MODEL] getClassificationById rows: ${result?.rows.length || 0} | name: ${result?.rows?.[0]?.classification_name || "N/A"}`
+        )
         return result;
     } catch (error) {
         console.error("[MODEL] getClassificationById error:", error);
         throw error;
     }
-}
+} 
 
 /* ***************************
  *  NEW: Insert a new inventory record
@@ -166,7 +168,11 @@ async function addInventory(
 
         const result = await pool.query(sql, values)
 
-        console.log("[MODEL] addInventory new inv_id:", result?.rows?.[0]?.inv_id);
+        console.log(
+            `[MODEL] addInventory → new inv_id: ${result?.rows?.[0]?.inv_id || "N/A"} | 
+            Make: ${inv_make} | Model: ${inv_model} | Color: ${inv_color || "N/A"} | 
+            Classification ID: ${classification_id}`
+        )
 
     // Return a small summary that the controller can log / use if needed
         return {

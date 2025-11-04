@@ -241,7 +241,8 @@ invCont.buildAddInventory = async function (req, res, next) {
  * Route: /inv/add-inventory  (POST)
  * Validation has already run 
  * ************************************************** */
-invCont.addInventory = async function (req, res, next) {  
+invCont.addInventory = async function (req, res, next) {
+  console.log("[CTRL:addInventory] Ran with body:", req.body);  
   try {
     // Build navigation for layout
     const nav = await utilities.getNav()
