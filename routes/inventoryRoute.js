@@ -66,7 +66,7 @@ router.get(
 router.post(
   "/add-inventory",
   invValidate.inventoryRules(),
-  invValidate.checkInventoryData,  // <-- use the actual name
+  invValidate.checkAddInventoryData,  // <-- use the actual name
   utilities.handleErrors(invController.addInventory)
 )
 

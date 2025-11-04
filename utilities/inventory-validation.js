@@ -44,7 +44,7 @@ invValidate.checkClassificationData = async (req, res, next) => {
 }
 
 /* ******************************************************
- *  Classification Name Validation Rules - Add Inventory
+ * Inventory Validation Rules – Add Inventory
  * Assignment 04 - Task 03
  * **************************************************** */
   invValidate.inventoryRules = () => {
@@ -114,7 +114,7 @@ invValidate.checkClassificationData = async (req, res, next) => {
  *  Add-Inventory Data Checker
  *  Re-render with errors and sticky values
  * ************************************** */
-invValidate.checkInventoryData = async (req, res, next) => {
+invValidate.checkAddInventoryData = async (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav()
