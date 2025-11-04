@@ -2,7 +2,7 @@
 /* ***************************
  *  Inventory Model
  * ************************** */
-const pool = require('../database/');
+const pool = require('../database/'); // ".." means "go up one folder" (from /models to /database)
 
 /* ****************************************
  *  Get all classification data (getNav)
@@ -91,6 +91,94 @@ async function getVehicleById(inv_id) {
     }
 }
 
+/* ***************************
+ *  Get a single classification by id - Assignment 04 Task 03
+ * sed by server-side validation to verify that the
+ * selected classification_id actually exists in the DB.
+ * ************************** */
+async function getClassificationById(classification_id) {
+    try {
+        const id = Number(classification_id);
+        console.log("[MODEL] getClassificationById =", id);
+
+        const sql = `
+            SELECT *
+                FROM public.classification
+                WHERE classification_id = $1
+            `
+        const result = await pool.query(sql, [id])
+        // Debug
+        console.log("[MODEL] getClassificationById rows:", result?.rows.length || 0);
+        return result;
+    } catch (error) {
+        console.error("[MODEL] getClassificationById error:", error);
+        throw error;
+    }
+}
+
+/* ***************************
+ *  NEW: Insert a new inventory record
+ *  - Used by invController.addInventory (Assignment 04 - Task 3)
+ *  - The parameter order here matches how the controller calls it.
+ * ************************** */
+async function addInventory(
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    classification_id
+) {
+    try {
+        const sql = `
+        INSERT INTO public.inventory
+            (inv_make,
+            inv_model,
+            inv_description,
+            inv_image,
+            inv_thumbnail,
+            inv_price,
+            inv_year,
+            inv_miles,
+            inv_color,
+            classification_id)
+        VALUES
+            ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        RETURNING inv_id
+        `
+
+        const values = [
+            inv_make,
+            inv_model,
+            inv_description,
+            inv_image,
+            inv_thumbnail,
+            inv_price,
+            inv_year,
+            inv_miles,
+            inv_color,
+            classification_id,
+        ]
+
+        const result = await pool.query(sql, values)
+
+        console.log("[MODEL] addInventory new inv_id:", result?.rows?.[0]?.inv_id);
+
+    // Return a small summary that the controller can log / use if needed
+        return {
+            rowCount: result.rowCount, // should be 1 on success
+            id: result.rows?.[0]?.inv_id, // new inventory primary key
+        }
+    } catch (error) {
+        console.error("[MODEL] addInventory error:", error)
+        throw error
+    }
+}
+
 /* 
 IMPORTANT:
 - Make sure this function is exported so the controller can call it.
@@ -102,5 +190,7 @@ module.exports = {
     getClassifications, 
     addClassification,
     getInventoryByClassificationId,
-    getVehicleById, 
+    getVehicleById,
+    getClassificationById,
+    addInventory, 
 };
