@@ -168,11 +168,11 @@ async function addInventory(
 
         const result = await pool.query(sql, values)
 
-        console.log(
-            `[MODEL] addInventory → new inv_id: ${result?.rows?.[0]?.inv_id || "N/A"} | 
-            Make: ${inv_make} | Model: ${inv_model} | Color: ${inv_color || "N/A"} | 
-            Classification ID: ${classification_id}`
-        )
+        // console.log(
+        //     `[MODEL] addInventory → new inv_id: ${result?.rows?.[0]?.inv_id || "N/A"} | 
+        //     Make: ${inv_make} | Model: ${inv_model} | Color: ${inv_color || "N/A"} | 
+        //     Classification ID: ${classification_id}`
+        // )
 
     // Return a small summary that the controller can log / use if needed
         return {

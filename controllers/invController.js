@@ -242,7 +242,7 @@ invCont.buildAddInventory = async function (req, res, next) {
  * Validation has already run 
  * ************************************************** */
 invCont.addInventory = async function (req, res, next) {
-  console.log("[CTRL:addInventory] Ran with body:", req.body);  
+  // console.log("[CTRL:addInventory] Ran with body:", req.body);  
   try {
     // Build navigation for layout
     const nav = await utilities.getNav()
@@ -261,8 +261,8 @@ invCont.addInventory = async function (req, res, next) {
     } = req.body
 
     // Log what was received from the form
-    console.log("[CTRL] Received form data - addInventory:")
-    console.table(req.body)
+    // console.log("[CTRL] Received form data - addInventory:")
+    // console.table(req.body)
 
     // Ensure image paths aren’t empty
     const imagePath =
@@ -276,18 +276,18 @@ invCont.addInventory = async function (req, res, next) {
         : "/images/vehicles/no-image-tn.png"
 
     // Log final payload to be inserted
-    console.log("[CTRL:addInventory] Final insert payload:", {
-      classification_id,
-      inv_make,
-      inv_model,
-      inv_description,
-      inv_price,
-      inv_year,
-      inv_miles,
-      inv_color,
-      inv_image: imagePath,
-      inv_thumbnail: thumbPath,
-    })
+    // console.log("[CTRL:addInventory] Final insert payload:", {
+    //   classification_id,
+    //   inv_make,
+    //   inv_model,
+    //   inv_description,
+    //   inv_price,
+    //   inv_year,
+    //   inv_miles,
+    //   inv_color,
+    //   inv_image: imagePath,
+    //   inv_thumbnail: thumbPath,
+    // })
 
     // Insert into the database via model
     const result = await invModel.addInventory(
@@ -304,7 +304,7 @@ invCont.addInventory = async function (req, res, next) {
     )
 
     // Log the DB result for debugging
-    console.log("[CTRL:addInventory] DB insert result:", result)
+    // console.log("[CTRL:addInventory] DB insert result:", result)
 
     // On success, flash message and redirect
     req.flash("notice", "The vehicle was successfully added.")
