@@ -65,10 +65,13 @@
       <!-- Description -->
       <div class="form-row">
         <label for="inv_description">Description</label>
-        <textarea
-          id="inv_description" name="inv_description" rows="4"
-          minlength="5" required
-          placeholder="Brief description of the vehicle"><%= (inv_description || "").trim() %></textarea>
+          <textarea
+            id="inv_description"
+            name="inv_description"
+            rows="4"
+            minlength="5"
+            required
+            placeholder="Brief description of the vehicle"><%= inv_description %></textarea>
       </div>
 
       <!-- Image Path -->
