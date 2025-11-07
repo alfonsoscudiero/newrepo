@@ -105,6 +105,7 @@ validate.loginRules = () => {
       .trim()
       .isEmail()
       .withMessage("Please provide a valid email address."),
+      
     body("account_password")
       .trim()
       .notEmpty()

@@ -37,7 +37,7 @@ async function processLogin(req, res) {
   // and POST routing are working
   req.flash(
     "notice",
-    "Login POST reached. Server-side validation passed. (Authentication will be implemented later.)"
+    "Login POST reached. Server-side validation passed."
   )
   // Render login view
   res.render("account/login", {
