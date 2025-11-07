@@ -23,6 +23,8 @@ async function buildLogin(req, res, next) {
   res.render("account/login", { //Render the view located at views/account/login.ejs
     title: "Login",
     nav,
+    errors: null,         
+    account_email: "",    
   })
 }
 
