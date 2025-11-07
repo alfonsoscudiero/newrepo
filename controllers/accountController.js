@@ -25,6 +25,29 @@ async function buildLogin(req, res, next) {
     nav,
   })
 }
+
+/* ****************************************
+ *  Process Login (POST /account/login)
+ *  It confirms that server validation passed and
+ *  re-renders the login page. 
+ * **************************************** */
+async function processLogin(req, res) {
+  let nav = await utilities.getNav()
+  // Show a flash message to verify that server validation 
+  // and POST routing are working
+  req.flash(
+    "notice",
+    "Login POST reached. Server-side validation passed. (Authentication will be implemented later.)"
+  )
+  // Render login view
+  res.render("account/login", {
+    title: "Login",
+    nav,
+    errors: null,
+    account_email: req.body.account_email,
+  })
+}
+
 /* ****************************************
  * buildRegister
  * Renders the Register view.
@@ -109,4 +132,4 @@ async function registerAccount(req, res) {
 }
 
 //Export controller functions to be used in routes
-module.exports = { buildLogin, buildRegister, registerAccount }
+module.exports = { buildLogin, processLogin, buildRegister, registerAccount }

@@ -19,9 +19,9 @@ router.get("/login", utilities.handleErrors(accountController.buildLogin)); // u
 // Process registration POST — this receives the form data from /account/login
 router.post(
   "/login",
-  validate.loginRules(),
-  validate.checkLoginData,
-  utilities.handleErrors(accountController.processLogin)
+  validate.loginRules(),    // run validation checks
+  validate.checkLoginData, // handle validation result
+  utilities.handleErrors(accountController.processLogin) //handles the logic and decides what to do next
 )
 
 /* ***************************
