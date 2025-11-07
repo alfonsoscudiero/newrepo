@@ -6,21 +6,20 @@
 
 <!-- Flash message (renders only if something was sent) -->
 <%- messages() %>
+<!-- *******************************
+Display server-side validation errors
+******************************* -->
+<% if (errors) { %>
+  <ul class="notice-registration">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
 
 <section class="card auth-card">
   <h2>New Account</h2>
   <div class="auth-card-wrapper">
-    <!-- *******************************
-    Display server-side validation errors
-    ******************************* -->
-    <% if (errors) { %>
-      <ul class="notice-registration">
-        <% errors.array().forEach(error => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
-    <% } %>
-
     <!-- *******************************
     Registration Form
     ******************************* -->
