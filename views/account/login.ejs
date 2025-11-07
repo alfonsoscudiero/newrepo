@@ -4,6 +4,18 @@
 
 <!-- Flash message (renders only if something was sent) -->
 <%- messages() %>
+<!-- *******************************
+Display server-side validation errors
+******************************* -->
+<% if (locals.errors) { %>
+  <ul>
+    <% locals.errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+
 
 <section class="card auth-card">
   <h2>Account Login</h2>
