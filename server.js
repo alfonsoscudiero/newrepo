@@ -12,6 +12,7 @@ const app = express();
 const session = require("express-session"); //express-session
 const pool = require('./database/'); // Postgres pool
 const bodyParser = require("body-parser"); //// Parse JSON & 
+const cookieParser = require("cookie-parser") // Allows reading cookies
 
 // HTML form bodies
 // Controllers and Utilities
@@ -45,9 +46,7 @@ app.use(session({ //invokes the app.use() function
     name: 'sessionId',                  // name of the cookie that stores the session ID
 }))
 
-// ***********************
 // Express Messages Middleware
-// ***********************
 app.use(require('connect-flash')()) //loads the connect-flash package and enables flash messages
 app.use(function (req, res, next) {
     // Make messages() helper available in all views (EJS files)
@@ -55,11 +54,12 @@ app.use(function (req, res, next) {
     next() // continue to the next middleware or route
 })
 
-// ***************************************************
 // Make parsed body available at req.body | Module 05
-// ***************************************************
 app.use(bodyParser.json()) //use the body parser to work with JSON data
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+// Add Cookie Parser to read JWT or values form req.cookies | Module 06
+app.use(cookieParser())
 
 /* ***********************
  * Routes
@@ -72,7 +72,6 @@ app.get('/', utilities.handleErrors(baseController.buildHome))
 app.use('/inv', inventoryRoute); 
 // Module 05 - Anything defined in routes/accountRoute.js is now reachable under /account 
 app.use("/account", accountRoute); //Account route
-
 
 /* ***********************
  * Express Error Handler - Global error handler (INLINE)
