@@ -4,13 +4,13 @@ Module 05
  * ************************** */
 // Import utilities to build the nav bar, error handling, etc.
 const utilities = require("../utilities");
-
 // controllers/accountController.js
 const accountModel = require("../models/account-model") // model to save account data
-
 // bcryptjs for password hashing
 const bcrypt = require("bcryptjs")
-
+// Add JWT for authentication
+const jwt = require("jsonwebtoken")    
+require("dotenv").config()  
 
 /* ****************************************
  *  Deliver login view
