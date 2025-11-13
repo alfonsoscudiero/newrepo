@@ -20,11 +20,13 @@ require("dotenv").config()
 async function buildAccountManagement(req, res, next) {
   try {
     let nav = await utilities.getNav()
+    const accountData = res.locals.accountData
     // Render the management page view
     res.render("account/management", {
       title: "Account Management",
       nav,
       errors: null,
+      accountData,
     })
   } catch (error) {
     // Debugging
@@ -209,8 +211,8 @@ async function accountLogin(req, res) {
       return res.redirect("/account/")
     }
     else {
-      req.flash("message notice", "Please check your credentials and try again.")
-      res.status(400).render("account/login", {
+      req.flash("notice", "Please check your credentials and try again.")
+      return res.status(400).render("account/login", {
         title: "Login",
         nav,
         errors: null,
