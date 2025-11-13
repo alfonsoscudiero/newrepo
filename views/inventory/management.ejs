@@ -14,3 +14,22 @@
   <li><a href="/inv/add-classification" class="link-btn">Add New Classification</a></li>
   <li><a href="/inv/add-inventory" class="link-btn">Add New Vehicle</a></li>
 </ul>
+
+<!-- ===============================
+  AJAX Select Inventory - Module 06 | Week 09
+  Inventory Management section
+  - Select a classification
+  - Display items in an HTML table
+  ================================ -->
+<h2>Manage Inventory</h2>
+<p>Choose a classification to see those inventory items</p>
+
+<!-- Dropdown list created by utilities.buildClassificationList() -->
+<%- classificationSelect %>
+
+<!-- Empty table where AJAX results will be inserted -->
+<table id="inventoryDisplay"></table>
+
+<noscript>JavaScript must be enabled to use this page.</noscript>
+
+<script src="/public/js/inventory.js"></script>
