@@ -60,6 +60,8 @@ app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-
 
 // Add Cookie Parser to read JWT or values form req.cookies | Module 06
 app.use(cookieParser())
+// Global JWT check middleware | Module 06
+app.use(utilities.checkJWTToken)
 
 /* ***********************
  * Routes
