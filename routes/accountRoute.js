@@ -17,7 +17,7 @@ const validate = require("../utilities/account-validation") // Import validation
  * ************************** */
 router.get(
   "/",
-  utilities.checkJWTToken,  
+  utilities.checkLogin,
   utilities.handleErrors(accountController.buildAccountManagement)
 )
 
