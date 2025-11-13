@@ -3,6 +3,10 @@
 // We will use it here to get the list of all classifications.
 const invModel = require("../models/inventory-model")
 
+// JWT + dotenv for reading and verifying the token from cookies
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
+
 // Create an empty object to hold our utility functions.
 // Right now, it will only contain getNav().
 const Util = {}
@@ -51,7 +55,6 @@ Util.getNav = async function (req, res, next) {
 
 /* **************************************
 * Build the classification view HTML
-* Plain English:
 * - Receive an array of vehicles (data)
 * - Build a <ul> list where each <li> shows a vehicle card:
 *   image, name (make + model), price, and a link to its detail page
@@ -111,6 +114,33 @@ Util.buildClassificationGrid = async function(data){
  **************************************** */
 Util.handleErrors = fn => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next) 
+
+/* ****************************************
+ * Middleware to check token validity (INSTRUCTOR CODE)
+ * - If a jwt cookie exists, verify it using ACESS_TOKEN_SECRET.
+ * - If verification fails -> clear cookie, ask user to log in again.
+ * - If verification succeeds -> put account data + loggedin flag in res.locals
+ **************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("Please log in")
+          res.clearCookie("jwt")
+          return res.redirect("/account/login")
+        }
+        res.locals.accountData = accountData
+        res.locals.loggedin = 1
+        next()
+      }
+    )
+  } else {
+    next()
+  }
+}
 
 /* ****************************************
  * Export all utility functions

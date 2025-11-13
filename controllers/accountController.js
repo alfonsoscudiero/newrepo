@@ -26,7 +26,6 @@ async function buildAccountManagement(req, res, next) {
       nav,
       errors: null,
     })
-    console.log()
   } catch (error) {
     // Debugging
     console.error("[CTRL] Error building account management view", error)
@@ -194,6 +193,7 @@ async function accountLogin(req, res) {
       })
     }
   } catch (error) {
+    console.error("[CTRL] AccountLogin error:", error)
     throw new Error('Access Forbidden')
   }
 }
