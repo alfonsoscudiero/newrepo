@@ -341,6 +341,33 @@ invCont.addInventory = async function (req, res, next) {
   }
 }
 
+/* ****************************************
+ * Return Inventory by Classification As JSON
+ * Used by AJAX fetch in inventory.js
+ **************************************** */
+invCont.getInventoryJSON = async (req, res, next) => {
+  try {
+    // 1. Extract classification_id from the route parameters
+    const classification_id = parseInt(req.params.classification_id)
+    console.log("[CTRL:getInventoryJSON] classification_id:", classification_id)
+
+    // 2. Query the database for vehicles in this classification
+    const invData = await invModel.getInventoryByClassificationId(classification_id)
+
+    // 3. Check if valid data is returned
+    if (invData[0].inv_id) {
+      // Return the array of vehicles as JSON to the browser
+      return res.json(invData)
+    } else {
+      // If no data is returned, forward an error to the error handler
+      next(new Error("No data returned"))
+    }
+
+  } catch (error) {
+    console.error("[CTRL:getInventoryJSON] Error:", error)
+    next(error)
+  }
+}
 
 
 
