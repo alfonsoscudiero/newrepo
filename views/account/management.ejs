@@ -1,0 +1,23 @@
+<% /* =============================================
+  views/account/management.ejs
+  Module 06 Week 09
+  Account Management landing page
+  ============================================= */ %>
+
+<h1><%= title %></h1>
+
+<!-- Flash message area  -->
+<%- messages() %>
+
+<!-- Server-side validation errors (if any) -->
+<% if (errors && errors.array) { %>
+  <ul class="notice-registration">
+    <% errors.array().forEach(error => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<h2>Welcome <%= locals.accountData.account_firstname %></h2>
+
+<p>You're logged in.</p>

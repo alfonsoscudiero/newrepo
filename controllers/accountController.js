@@ -13,6 +13,28 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()  
 
 /* ****************************************
+ *  Account Management View
+ *  GET /account/
+ *  Shows the "You're logged in." page
+ * **************************************** */
+async function buildAccountManagement(req, res, next) {
+  try {
+    let nav = await utilities.getNav()
+    // Render the management page view
+    res.render("account/management", {
+      title: "Account Management",
+      nav,
+      errors: null,
+    })
+    console.log()
+  } catch (error) {
+    // Debugging
+    console.error("[CTRL] Error building account management view", error)
+    next(error)
+  }
+}
+
+/* ****************************************
  *  Deliver login view
  *  Render the login page at GET /account/login
  *  title: used by <title> and <h1>
@@ -177,4 +199,4 @@ async function accountLogin(req, res) {
 }
 
 //Export controller functions to be used in routes
-module.exports = { buildLogin, processLogin, buildRegister, registerAccount, accountLogin }
+module.exports = { buildLogin, processLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement }

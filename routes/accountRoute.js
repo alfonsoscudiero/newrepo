@@ -11,6 +11,16 @@ const accountController = require("../controllers/accountController") //Import t
 const validate = require("../utilities/account-validation") // Import validation rules
 
 /* ***************************
+ *  Default account route - /account/
+ *  Account management view after successful login   
+ *  Module 06 | Week 09 
+ * ************************** */
+router.get(
+  "/",
+  utilities.handleErrors(accountController.buildAccountManagement)
+)
+
+/* ***************************
  *  Deliver login view  
 The base path "/account" will be added in server.js 
  * ************************** */
