@@ -7,6 +7,22 @@
 // Import the PostgreSQL database connection pool for executing SQL queries
 const pool = require("../database/")
 
+/* ****************************************
+ *  Return account data using email address
+ *  Module 06 - Login Activity
+ * **************************************** */
+async function getAccountByEmail (account_email) {
+  try {
+    const result = await pool.query(
+      'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password FROM account WHERE account_email = $1',
+      [account_email]
+    )
+    return result.rows[0]
+  } catch (error) {
+    return new Error("No matching email found")
+  }
+}
+
 /* ***************************
  *  Register new account
  *  Params: firstname, lastname, email, password
@@ -40,6 +56,7 @@ async function checkExistingEmail(account_email) {
 
 // Export model functions
 module.exports = {
+  getAccountByEmail,
   registerAccount,
   checkExistingEmail,
 }
