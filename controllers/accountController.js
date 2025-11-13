@@ -93,63 +93,88 @@ async function buildRegister(req, res, next) {
  *  POST route for /account/register
  * **************************************** */
 async function registerAccount(req, res) {
-  // Build navigation for the layout
+  // 1) Build the nav for the layout
   let nav = await utilities.getNav()
+  // 2) Grab the form data from the request body
+  const {
+    account_firstname,
+    account_lastname,
+    account_email,
+    account_password,
+  } = req.body
 
-  // Extract data from the form fields
-  const { account_firstname, account_lastname, account_email, account_password } = req.body
-
-/* ****************************************
- *  Hash the password before storing in the DB
- * **************************************** */
+  /* ****************************************
+   *  Hash the password before saving it
+   * **************************************** */
   let hashedPassword
   try {
     // Generate a secure hash of the password with 10 salt rounds.
     hashedPassword = bcrypt.hashSync(account_password, 10)
   } catch (error) {
-    // If an error occurs while hashing, show a user-friendly message.
-    req.flash("notice", "Sorry, there was an error processing the registration.")
+    console.error("[CTRL] registerAccount hash error:", error)
+    // Message for the user if hashing fails
+    req.flash(
+      "notice",
+      "Sorry, there was an error processing the registration."
+    )
     return res.status(500).render("account/register", {
       title: "Registration",
       nav,
       errors: null,
     })
   }
+  /* Insert the new account into the DB */
+  let regResult
+  try {
+    regResult = await accountModel.registerAccount(
+      account_firstname,
+      account_lastname,
+      account_email,
+      hashedPassword
+    )
+  } catch (error) {
+    console.error("[CTRL] registerAccount DB error:", error)
+    req.flash(
+      "notice",
+      "Sorry, there was an error saving your account. Please try again."
+    )
+    return res.status(500).render("account/register", {
+      title: "Registration",
+      nav,
+      errors: null,
+    })
+  }
+  // DEBUG: show what the model returned
+  // console.log(
+  //   "register result -> type:",
+  //   typeof regResult,
+  //   "rowCount:",
+  //   regResult?.rowCount
+  // )
 
-  // Insert the new account using the hashed password
-  const regResult = await accountModel.registerAccount(
-    account_firstname,
-    account_lastname,
-    account_email,
-    hashedPassword
-  )
-
-  // Always show basic shape - Debug
-  // console.log("register result -> type:", typeof regResult, "rowCount:", regResult?.rowCount)
-  // If the model returned an error message string, print it so we know the cause
   // if (typeof regResult === "string") {
   //   console.log("register model error ->", regResult)
   // }
 
-  // Handle success/failure directly
+  /* ****************************************
+   *  Handle success / failure
+   * **************************************** */
   if (regResult && regResult.rowCount > 0) {
-    // Flash success message using the user's first name
+    // Success: flash a message using the user's first name
     req.flash(
       "notice",
       `Congratulations, you're registered ${account_firstname}. Please log in.`
     )
-    // Render login view after successful registration
-    res.status(201).render("account/login", {
-      title: "Login",
-      nav,
-    })
+    // Redirect to the normal login route.
+    // That route will call buildLogin(), which renders the login view
+    return res.status(201).redirect("/account/login")
   } else {
-    // Flash message on registration failure
+    // Insert failed (no rows affected)
     req.flash("notice", "Sorry, the registration failed.")
-    // Re-render the registration page so the user can try again
-    res.status(501).render("account/register", {
+    return res.status(501).render("account/register", {
       title: "Registration",
       nav,
+      errors: null,
     })
   }
 }
