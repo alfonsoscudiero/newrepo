@@ -106,7 +106,35 @@ Util.buildClassificationGrid = async function(data){
   // Return the HTML string to the controller so it can render the view
   return grid
 }
+/* ****************************************
+ * AJAX Select Inventory - Module 06 | Week 09
+ * ----------------------------------------
+ * Builds an HTML <select> element listing ALL classifications.
+ * The <select> has id="classificationList" so JavaScript can find it.
+ * "classification_id" lets us pre-select one option
+ * **************************************** */
+Util.buildClassificationList = async function (classification_id = null) {
+  // Get classifications from the database
+  const data = await invModel.getClassifications()
+  // Start the <select> element.
+  let select = '<select name="classification_id" id="classificationList">'
+  select += '<option value="">Choose a Classification</option>'
 
+  // Add each classification as an <option>
+  data.rows.forEach((row) => {
+    select += `<option value="${row.classification_id}"`
+    // If a classification_id is provided, mark that option as selected (sticky)
+    if (classification_id && row.classification_id == classification_id) {
+      select += " selected"
+    }
+
+    select += `>${row.classification_name}</option>`
+  })
+
+  select += "</select>"
+
+  return select
+}
 /* ****************************************
  * Middleware For Handling Errors
  * pass rejected Promises to Express error handling.
@@ -114,7 +142,6 @@ Util.buildClassificationGrid = async function(data){
  **************************************** */
 Util.handleErrors = fn => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next) 
-
 /* ****************************************
  * Middleware to check token validity - Module 06 | Week 09
  * - If a jwt cookie exists, verify it using ACESS_TOKEN_SECRET.
@@ -141,7 +168,6 @@ Util.checkJWTToken = (req, res, next) => {
     next()
   }
 }
-
 /* ****************************************
  * Middleware to protects the route - Module 06 | Week 09
  * - Blocks access if the user has no token
