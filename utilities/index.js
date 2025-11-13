@@ -116,7 +116,7 @@ Util.handleErrors = fn => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next) 
 
 /* ****************************************
- * Middleware to check token validity (INSTRUCTOR CODE)
+ * Middleware to check token validity - Module 06 | Week 09
  * - If a jwt cookie exists, verify it using ACESS_TOKEN_SECRET.
  * - If verification fails -> clear cookie, ask user to log in again.
  * - If verification succeeds -> put account data + loggedin flag in res.locals
@@ -139,6 +139,20 @@ Util.checkJWTToken = (req, res, next) => {
     )
   } else {
     next()
+  }
+}
+
+/* ****************************************
+ * Middleware to protects the route - Module 06 | Week 09
+ * - Blocks access if the user has no token
+ * - It checks authorization
+ **************************************** */
+Util.checkLogin = (req, res, next) => {
+  if (res.locals.loggedin) {
+    next()  // allow access
+  } else {
+    req.flash("notice", "Please log in.")
+    return res.redirect("/account/login")  // If you are not logged in, you CANNOT see this page
   }
 }
 
