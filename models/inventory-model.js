@@ -14,7 +14,7 @@ async function getClassifications() {
 }
 
 /* ***************************
- *  Module 07 - Assignment 04 Task 2
+ *  Module 03 - Assignment 04 Task 2
  *  Handles database operations for "Add Classification"
  * ************************** */
 async function addClassification(name) {

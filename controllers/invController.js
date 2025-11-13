@@ -4,7 +4,6 @@
 const invModel = require("../models/inventory-model")
 // Bring in shared utility functions (navigation builder, grid builder, etc.)
 const utilities = require("../utilities/")
-
 // Create a controller object to hold related functions
 const invCont = {}
 
@@ -17,10 +16,18 @@ invCont.buildManagementView = async function (req, res, next) {
     // 1) Build the nav menu (Home + Classifications)
     const nav = await utilities.getNav()
 
+    // ================================
+    // AJAX Select Inventory - Module 06 | Week 09
+    // This will be used by the client-side JavaScript to fetch inventory via AJAX.
+    // ================================
+    const classificationSelect = await utilities.buildClassificationList()    
+
     // 2) Render the management page view
     res.render("inventory/management", {
       title: "Vehicle Management",
       nav,
+      errors: null,
+      classificationSelect, // AJAX Select Inventory
     })
   } catch (error) {
     // Log the error for debugging
