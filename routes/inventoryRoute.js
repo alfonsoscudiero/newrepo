@@ -70,4 +70,12 @@ router.post(
   utilities.handleErrors(invController.addInventory)
 )
 
+/* ****************************************
+ * JSON route for AJAX inventory fetch
+ * URL: /inv/getInventory/:classification_id
+ **************************************** */
+router.get("/getInventory/:classification_id",
+  utilities.handleErrors(invController.getInventoryJSON)
+)
+
 module.exports = router
