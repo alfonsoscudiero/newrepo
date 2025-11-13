@@ -3,6 +3,7 @@
  * Module 06 | Week 09: AJAX Select Inventory
  * Task 1: Event listener for classification <select>
  * ******************************************** */
+// console.log("inventory.js is RUNNING");
 'use strict'
 
 // Get a list of items in inventory based on the classification_id

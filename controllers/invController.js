@@ -340,36 +340,34 @@ invCont.addInventory = async function (req, res, next) {
     })
   }
 }
-
 /* ****************************************
  * Return Inventory by Classification As JSON
  * Used by AJAX fetch in inventory.js
  **************************************** */
 invCont.getInventoryJSON = async (req, res, next) => {
   try {
-    // 1. Extract classification_id from the route parameters
+    // 1. Get the classification_id from the URL
     const classification_id = parseInt(req.params.classification_id)
     console.log("[CTRL:getInventoryJSON] classification_id:", classification_id)
 
-    // 2. Query the database for vehicles in this classification
+    // 2. Ask the model for all vehicles in that classification
     const invData = await invModel.getInventoryByClassificationId(classification_id)
+    console.log("[CTRL:getInventoryJSON] invData from model:", invData)
 
-    // 3. Check if valid data is returned
-    if (invData[0].inv_id) {
-      // Return the array of vehicles as JSON to the browser
+    // 3. If we got an array with at least one vehicle, return it as JSON
+    if (Array.isArray(invData) && invData.length > 0) {
       return res.json(invData)
-    } else {
-      // If no data is returned, forward an error to the error handler
-      next(new Error("No data returned"))
     }
+
+    // 4. If nothing came back, return an empty array (NOT a crash)
+    // This avoids 500 errors and still keeps the frontend happy.
+    return res.json([])
 
   } catch (error) {
     console.error("[CTRL:getInventoryJSON] Error:", error)
-    next(error)
+    next(error) // let Express error handler deal with it
   }
 }
-
-
 
 // Export this controller so routes can call its functions
 module.exports = {
@@ -380,4 +378,5 @@ module.exports = {
   addClassification: invCont.addClassification, //POST
   buildAddInventory: invCont.buildAddInventory, //GET
   addInventory: invCont.addInventory, // POST
+  getInventoryJSON: invCont.getInventoryJSON 
 }
