@@ -78,4 +78,13 @@ router.get("/getInventory/:classification_id",
   utilities.handleErrors(invController.getInventoryJSON)
 )
 
+/* ****************************************
+ * Edit Inventory
+ * GET /inv/edit/:inv_id
+ **************************************** */
+router.get(
+  "/edit/:inv_id", //The :inv_id parameter will receive the vehicle id from the "Modify" link
+  utilities.handleErrors(invController.buildEditInventory)
+)
+
 module.exports = router
