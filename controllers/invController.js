@@ -47,7 +47,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
     const rawId = req.params.classificationId ?? req.params.id
     const classification_id = Number(rawId)
 
-    console.log("[CTRL] buildByClassificationId -> classificationId:", classification_id)
+    // console.log("[CTRL] buildByClassificationId -> classificationId:", classification_id)
 
     if (!Number.isInteger(classification_id)) {
       return next({ status: 404, message: "Invalid classification id." })
@@ -94,7 +94,7 @@ invCont.buildVehicleDetail = async function (req, res, next) {
     const inv_id_raw = req.params.inv_id
     const inv_id = Number(inv_id_raw)
 
-    console.log("[CTRL] buildVehicleDetail inv_id_raw =", inv_id_raw)
+    // console.log("[CTRL] buildVehicleDetail inv_id_raw =", inv_id_raw)
 
     if (!Number.isInteger(inv_id)) {
       return next({ status: 404, message: "Invalid vehicle Id." })
@@ -129,7 +129,7 @@ invCont.buildVehicleDetail = async function (req, res, next) {
       ? milesNumber.toLocaleString("en-US")
       : String(vehicle.inv_miles)
 
-    console.log("[CTRL] rendering details for:", name)
+    // console.log("[CTRL] rendering details for:", name)
 
     // 3) Render the view
     res.render("inventory/details", {
@@ -178,18 +178,18 @@ invCont.addClassification = async function (req, res, next) {
   let nav = await utilities.getNav()
   // 2) Extract data from the new classification form
   const { classification_name } = req.body
-  console.log("[CTRL] addClassification:", classification_name)
+  // console.log("[CTRL] addClassification:", classification_name)
 
   try {
     // 3) Insert the new classification
     const inserted = await invModel.addClassification(classification_name)
-    console.log("[CTRL] addClassification -> inserted:", inserted)
+    // console.log("[CTRL] addClassification -> inserted:", inserted)
     // Success message
     req.flash("notice", `The classification "${classification_name}" was successfully added.`)
     // Redirect to the inventory management page
     res.redirect("/inv")
   } catch (error) {
-    console.error("[CTRL] Error adding classification:", error)
+    // console.error("[CTRL] Error adding classification:", error)
     // If an error occurs
     req.flash("notice", "Sorry, there was an error adding the classification.")
     return res.status(500).render("inventory/add-classification", {
@@ -348,11 +348,11 @@ invCont.getInventoryJSON = async (req, res, next) => {
   try {
     // 1. Get the classification_id from the URL
     const classification_id = parseInt(req.params.classification_id)
-    console.log("[CTRL:getInventoryJSON] classification_id:", classification_id)
+    // console.log("[CTRL:getInventoryJSON] classification_id:", classification_id)
 
     // 2. Ask the model for all vehicles in that classification
     const invData = await invModel.getInventoryByClassificationId(classification_id)
-    console.log("[CTRL:getInventoryJSON] invData from model:", invData)
+    // console.log("[CTRL:getInventoryJSON] invData from model:", invData)
 
     // 3. If we got an array with at least one vehicle, return it as JSON
     if (Array.isArray(invData) && invData.length > 0) {
@@ -368,6 +368,67 @@ invCont.getInventoryJSON = async (req, res, next) => {
     next(error) // let Express error handler deal with it
   }
 }
+/* ******************************
+ * Build Edit Inventory View 
+ * Module 06 | Week 09
+ ****************************** */
+invCont.buildEditInventory = async function (req, res, next) {
+  try {
+    // 1) Read the inventory id from the URL parameter
+    const inv_id = parseInt(req.params.inv_id)
+    console.log("[CTRL] buildEditInventory -> inv_id =", inv_id)
+
+    // Validate inv_id 
+    if (!Number.isInteger(inv_id)) {
+      throw new Error("Invalid vehicle id.")
+    }
+
+    // 2) Build navigation for layout
+    const nav = await utilities.getNav()
+
+    // 3) Ask the model for this specific vehicle
+    const itemData = await invModel.getVehicleById(inv_id)
+
+    // If nothing came back, throw error
+    if (!itemData) {
+      throw new Error("No data returned for inventory item with id " + inv_id)
+    }
+
+    // 4) Get all classifications for the dropdown
+    let classifications = []
+    if (typeof invModel.getClassifications === "function") {
+      classifications = await invModel.getClassifications()
+    }
+
+    // 5) Build a readable name for the page title and heading
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`
+
+    // 6) Render the edit-inventory view and pre-fill all fields
+    res.render("inventory/edit-inventory", {
+      title: "Edit " + itemName,
+      nav,
+      errors: null,
+      // For the dropdown (same pattern as add-inventory.ejs)
+      classifications,
+      classification_id: itemData.classification_id,
+      // Hidden primary key (which record are we editing?)
+      inv_id: itemData.inv_id,
+      // Sticky values for every single field
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_description: itemData.inv_description,
+      inv_image: itemData.inv_image,
+      inv_thumbnail: itemData.inv_thumbnail,
+      inv_price: itemData.inv_price,
+      inv_miles: itemData.inv_miles,
+      inv_color: itemData.inv_color,
+    })
+  } catch (error) {
+    console.error("[CTRL] buildEditInventory error:", error)
+    next(error)
+  }
+}
 
 // Export this controller so routes can call its functions
 module.exports = {
@@ -378,5 +439,6 @@ module.exports = {
   addClassification: invCont.addClassification, //POST
   buildAddInventory: invCont.buildAddInventory, //GET
   addInventory: invCont.addInventory, // POST
-  getInventoryJSON: invCont.getInventoryJSON 
+  getInventoryJSON: invCont.getInventoryJSON,
+  buildEditInventory: invCont.buildEditInventory, // GET
 }
