@@ -369,7 +369,7 @@ invCont.getInventoryJSON = async (req, res, next) => {
   }
 }
 /* ******************************
- * Build Edit Inventory View 
+ * Build Edit Inventory View - GET
  * Module 06 | Week 09
  ****************************** */
 invCont.buildEditInventory = async function (req, res, next) {
@@ -429,6 +429,84 @@ invCont.buildEditInventory = async function (req, res, next) {
     next(error)
   }
 }
+/* ******************************
+ * Update Vehicle Data - POST
+ * Module 06 | Week 09
+ ****************************** */
+invCont.updateInventory = async function (req, res, next) {
+  try {
+    // 1) Build the nav
+    const nav = await utilities.getNav()
+
+    // 2) Get updated values from the form
+    const {
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id,
+    } = req.body
+
+    // 3) Send data to the model to run the UPDATE query
+    const updateResult = await invModel.updateInventory(
+      inv_id,
+      inv_make,
+      inv_model,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_year,
+      inv_miles,
+      inv_color,
+      classification_id
+    )
+
+    // 4) If the update worked, flash success and go back to management view
+    if (updateResult) {
+      const itemName = `${inv_make} ${inv_model}`
+      req.flash("notice", `The ${itemName} was successfully updated.`)
+      return res.redirect("/inv/")
+    }
+
+    // 5) If the update failed, rebuild dropdown and re-render edit view
+    let classifications = []
+    if (typeof invModel.getClassifications === "function") {
+      classifications = await invModel.getClassifications()
+    }
+
+    const itemName = `${inv_make} ${inv_model}`
+    req.flash("notice", "Sorry, the update failed.")
+
+    return res.status(501).render("inventory/edit-inventory", {
+      title: "Edit " + itemName,
+      nav,
+      errors: null,
+      // Dropdown data
+      classifications,
+      classification_id,      
+      inv_id, // Hidden primary key
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_image,
+      inv_thumbnail,
+      inv_price,
+      inv_miles,
+      inv_color,
+    })
+  } catch (error) {
+    console.error("[CTRL] updateInventory error:", error)
+    next(error)
+  }
+}
 
 // Export this controller so routes can call its functions
 module.exports = {
@@ -441,4 +519,5 @@ module.exports = {
   addInventory: invCont.addInventory, // POST
   getInventoryJSON: invCont.getInventoryJSON,
   buildEditInventory: invCont.buildEditInventory, // GET
+  updateInventory: invCont.updateInventory, // POST
 }
