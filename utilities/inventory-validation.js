@@ -141,4 +141,51 @@ invValidate.checkAddInventoryData = async (req, res, next) => {
   next()
 }
 
+/* ******************************************************
+ * Inventory Validation Rules for Edit Inventory Form
+ * Module 06 - Week 09
+ * **************************************************** */
+invValidate.newInventoryRules = () => {
+  return invValidate.inventoryRules()
+}
+
+/* ******************************************************
+ * Update-Inventory Data Checker
+ * Re-render edit view with errors + sticky values
+ * Module 06 - Week 09
+ * **************************************************** */
+invValidate.checkUpdateData = async (req, res, next) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav()
+    const classifications = await invModel.getClassifications()
+
+    // Send inv_id back so the update form knows which vehicle to modify
+    const inv_id = req.body.inv_id
+
+    return res.status(400).render("inventory/edit-inventory", {
+      title: "Edit " + req.body.inv_make + " " + req.body.inv_model,
+      nav,
+      errors: errors.array(),
+      classifications,
+      inv_id,
+      // Sticky repopulated values
+      classification_id: req.body.classification_id,
+      inv_make: req.body.inv_make,
+      inv_model: req.body.inv_model,
+      inv_description: req.body.inv_description,
+      inv_image: req.body.inv_image,
+      inv_thumbnail: req.body.inv_thumbnail,
+      inv_price: req.body.inv_price,
+      inv_year: req.body.inv_year,
+      inv_miles: req.body.inv_miles,
+      inv_color: req.body.inv_color,
+    })
+  }
+
+  next()
+}
+
+
 module.exports = invValidate
