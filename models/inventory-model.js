@@ -36,7 +36,7 @@ async function addClassification(name) {
     } catch (error) {
         // Debug
         console.error("[MODEL] addClassification error:", error)
-        throw error
+        return null
     }
 }
 
@@ -62,7 +62,7 @@ async function getInventoryByClassificationId(classification_id) {
     } catch (error) {
         // For now, log the error. (Later you might use a centralized error handler.)
         console.error('getclassificationsbyid error ' + error);
-        throw error
+        return null
     }
 }
 
@@ -87,7 +87,7 @@ async function getVehicleById(inv_id) {
         return data.rows[0] || null; // single row or undefined
     } catch (error) {
         console.error("[MODEL] getVehicleById error:", error);
-        throw error; // let the global handler show a friendly 500
+        return null
     }
 }
 
@@ -114,14 +114,13 @@ async function getClassificationById(classification_id) {
         return result;
     } catch (error) {
         console.error("[MODEL] getClassificationById error:", error);
-        throw error;
+        return null
     }
 } 
 
 /* ***************************
- *  NEW: Insert a new inventory record
- *  - Used by invController.addInventory (Assignment 04 - Task 3)
- *  - The parameter order here matches how the controller calls it.
+ *    Insert a new inventory record
+ *    Used by invController.addInventory (Assignment 04 - Task 3)
  * ************************** */
 async function addInventory(
     inv_make,
@@ -181,16 +180,87 @@ async function addInventory(
         }
     } catch (error) {
         console.error("[MODEL] addInventory error:", error)
-        throw error
+        return null
+    }
+}
+/* ***************************
+ *  Update existing inventory item
+ *  Used by invController.updateInventory
+ *  Module 06 | Week 09
+ * ************************** */
+async function updateInventory(
+    inv_id,
+    inv_make,
+    inv_model,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_year,
+    inv_miles,
+    inv_color,
+    classification_id
+) {
+    try {
+        const sql = `
+        UPDATE public.inventory
+        SET
+            inv_make = $1,
+            inv_model = $2,
+            inv_description = $3,
+            inv_image = $4,
+            inv_thumbnail = $5,
+            inv_price = $6,
+            inv_year = $7,
+            inv_miles = $8,
+            inv_color = $9,
+            classification_id = $10
+        WHERE inv_id = $11
+        RETURNING *;
+        `
+
+        const data = await pool.query(sql, [
+        inv_make,
+        inv_model,
+        inv_description,
+        inv_image,
+        inv_thumbnail,
+        inv_price,
+        inv_year,
+        inv_miles,
+        inv_color,
+        classification_id,
+        inv_id,
+        ])
+
+        // How many rows were actually updated
+        console.log(
+        "[MODEL] updateInventory -> inv_id:",
+        inv_id,
+        "rowCount:",
+        data.rowCount
+        )
+
+        if (data.rowCount && data.rowCount > 0) {
+        // Debug: confirm the id of the updated record
+        console.log(
+            "[MODEL] updateInventory -> updated record inv_id:",
+            data.rows[0].inv_id
+        )
+        return data.rows[0] // return the updated row to the controller
+        }  
+        // No rows updated → possible false positive
+        console.warn(
+        "[MODEL] updateInventory -> no row updated for inv_id:",
+        inv_id
+        )
+        return null             
+    } catch (error) {
+        console.error("[MODEL] updateInventory error:", error)
+        return null
     }
 }
 
-/* 
-IMPORTANT:
-- Make sure this function is exported so the controller can call it.
-- If you already have module.exports elsewhere, add this function to that object.
-Example (keep your existing exports and just include this name too):
-*/
 // Export both functions together
 module.exports = {
     getClassifications, 
@@ -199,4 +269,5 @@ module.exports = {
     getVehicleById,
     getClassificationById,
     addInventory, 
+    updateInventory,
 };
