@@ -809,6 +809,11 @@ footer p {
     background: var(--c-100);
 }
 
+/* Disabled Button */
+button[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
 /* ***************************
  *  ====== Larger screens ======   
  * ************************** */
