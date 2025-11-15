@@ -27,7 +27,9 @@ The base path "/account" will be added in server.js
  * ************************** */
 router.get("/login", utilities.handleErrors(accountController.buildLogin)); // use error handler + controller
 
+/* ***************************
 // Process registration POST — this receives the form data from /account/login
+ * ************************** */
 router.post(
   "/login",
   validate.loginRules(),    // run validation checks
@@ -40,7 +42,10 @@ router.post(
  * ************************** */
 router.get("/register", utilities.handleErrors(accountController.buildRegister));
 
-// Process registration (POST) — this receives the form data from /account/register
+/* ***************************
+// Process registration (POST) — 
+// this receives the form data from /account/register
+ * ************************** */
 router.post(
   "/register",
   validate.registrationRules(),     // run validation checks

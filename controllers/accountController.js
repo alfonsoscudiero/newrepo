@@ -38,8 +38,6 @@ async function buildAccountManagement(req, res, next) {
 /* ****************************************
  *  Deliver login view
  *  Render the login page at GET /account/login
- *  title: used by <title> and <h1>
- *  nav: HTML for the site navigation (built by utilities.getNav())
  * **************************************** */
 async function buildLogin(req, res, next) {
   let nav = await utilities.getNav()
@@ -74,10 +72,8 @@ async function processLogin(req, res) {
 }
 
 /* ****************************************
- * buildRegister
- * Renders the Register view.
- * - No DB calls; just render the EJS template with a title.
- * - Keep the view path consistent with folder structure: "views/account/register.ejs"
+ *  Renders the Register view. - Module 06 | Week 09
+ *  views/account/register.ejs
  * **************************************** */
 async function buildRegister(req, res, next) {
   //  Fetch the navigation HTML before rendering
@@ -91,7 +87,7 @@ async function buildRegister(req, res, next) {
 }
 
 /* ****************************************
- *  Process Registration
+ *  Process Registration - Module 06 | Week 09
  *  POST route for /account/register
  * **************************************** */
 async function registerAccount(req, res) {
@@ -183,7 +179,7 @@ async function registerAccount(req, res) {
 
 /* ****************************************
  *  Process Login request
- *  Module 06
+ *  Module 06 - Week 09
  * **************************************** */
 async function accountLogin(req, res) {
   let nav = await utilities.getNav()

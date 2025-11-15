@@ -116,6 +116,7 @@ validate.loginRules = () => {
 /* ******************************
  * Check login data and return errors or continue
  *  - On error, re-render login.ejs with messages
+ * Module 06 - Week09
  * ****************************** */
 validate.checkLoginData = async (req, res, next) => {
   const errors = validationResult(req)
