@@ -220,6 +220,84 @@ async function accountLogin(req, res) {
     throw new Error('Access Forbidden')
   }
 }
+/* ******************************
+ * Build Delete Confirmation View
+ * Module 06 - Week 09 | Delete Inventory DB
+ ****************************** */
+invCont.deleteView = async function (req, res, next) {
+  try {
+    // Read and validate the id from the URL
+    const inv_id = parseInt(req.params.inv_id)
+    if (!Number.isInteger(inv_id)) {
+      throw new Error("Invalid vehicle id.")
+    }
 
-//Export controller functions to be used in routes
-module.exports = { buildLogin, processLogin, buildRegister, registerAccount, accountLogin, buildAccountManagement }
+    // Build navigation for the layout
+    const nav = await utilities.getNav()
+
+    // Get this specific vehicle from the model
+    const itemData = await invModel.getVehicleById(inv_id)
+
+    // Friendly name for the page title
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`
+
+    // Render delete-confirm.ejs with read-only data
+    return res.render("inventory/delete-confirm", {
+      title: "Delete " + itemName,
+      nav,
+      errors: null,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_price: itemData.inv_price,
+    })
+  } catch (error) {
+    console.error("[CTRL] deleteView error:", error)
+    next(error)
+  }
+}
+/* ******************************
+ * Delete Inventory Item (POST)
+ *Module 06 - Week 09 | Delete Inventory DB
+ ****************************** */
+invCont.deleteItem = async function (req, res, next) {
+  try {
+    // Read id from hidden input in the form body
+    const inv_id = parseInt(req.body.inv_id)
+    if (!Number.isInteger(inv_id)) {
+      throw new Error("Invalid vehicle id.")
+    }
+
+    // Ask the model to delete this record
+    const deleteResult = await invModel.deleteInventoryItem(inv_id)
+
+    // If the delete worked, go back to management with success message
+    if (deleteResult) {
+      req.flash("notice", "The deletion was successful.")
+      return res.redirect("/inv/")
+    }
+
+    // If it failed, send user back to the delete page
+    req.flash("notice", "Sorry, the delete failed.")
+    return res.redirect(`/inv/delete/${inv_id}`)
+  } catch (error) {
+    console.error("[CTRL] deleteItem error:", error)
+    next(error)
+  }
+}
+
+// Export this controller so routes can call its functions
+module.exports = {
+  buildByClassificationId: invCont.buildByClassificationId,
+  buildVehicleDetail: invCont.buildVehicleDetail,
+  buildManagementView: invCont.buildManagementView, 
+  buildAddClassification: invCont.buildAddClassification, //GET
+  addClassification: invCont.addClassification, //POST
+  buildAddInventory: invCont.buildAddInventory, //GET
+  addInventory: invCont.addInventory, // POST
+  getInventoryJSON: invCont.getInventoryJSON,
+  buildEditInventory: invCont.buildEditInventory, // GET
+  deleteView: invCont.deleteView,  // GET
+  deleteItem: invCont.deleteItem,   // POST
+}
