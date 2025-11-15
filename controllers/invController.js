@@ -508,6 +508,116 @@ invCont.updateInventory = async function (req, res, next) {
   }
 }
 
+/* ****************************************
+ *  Process Login request
+ *  Module 06 - Week 09
+ * **************************************** */
+async function accountLogin(req, res) {
+  let nav = await utilities.getNav()
+  const { account_email, account_password } = req.body
+  const accountData = await accountModel.getAccountByEmail(account_email)
+  if (!accountData) {
+    req.flash("notice", "Please check your credentials and try again.")
+    res.status(400).render("account/login", {
+      title: "Login",
+      nav,
+      errors: null,
+      account_email,
+    })
+    return
+  }
+  try {
+    if (await bcrypt.compare(account_password, accountData.account_password)) {
+      delete accountData.account_password
+      const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 * 1000 })
+      if(process.env.NODE_ENV === 'development') {
+        res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
+      } else {
+        res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
+      }
+      return res.redirect("/account/")
+    }
+    else {
+      req.flash("notice", "Please check your credentials and try again.")
+      return res.status(400).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+        account_email,
+      })
+    }
+  } catch (error) {
+    console.error("[CTRL] AccountLogin error:", error)
+    throw new Error('Access Forbidden')
+  }
+}
+/* ******************************
+ * Build Delete Confirmation View
+ * Module 06 - Week 09 | Delete Inventory DB
+ ****************************** */
+invCont.deleteView = async function (req, res, next) {
+  try {
+    // Read and validate the id from the URL
+    const inv_id = parseInt(req.params.inv_id)
+    if (!Number.isInteger(inv_id)) {
+      throw new Error("Invalid vehicle id.")
+    }
+
+    // Build navigation for the layout
+    const nav = await utilities.getNav()
+
+    // Get this specific vehicle from the model
+    const itemData = await invModel.getVehicleById(inv_id)
+
+    // Friendly name for the page title
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`
+
+    // Render delete-confirm.ejs with read-only data
+    return res.render("inventory/delete-confirm", {
+      title: "Delete " + itemName,
+      nav,
+      errors: null,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_price: itemData.inv_price,
+    })
+  } catch (error) {
+    console.error("[CTRL] deleteView error:", error)
+    next(error)
+  }
+}
+/* ******************************
+ * Delete Inventory Item (POST)
+ *Module 06 - Week 09 | Delete Inventory DB
+ ****************************** */
+invCont.deleteItem = async function (req, res, next) {
+  try {
+    // Read id from hidden input in the form body
+    const inv_id = parseInt(req.body.inv_id)
+    if (!Number.isInteger(inv_id)) {
+      throw new Error("Invalid vehicle id.")
+    }
+
+    // Ask the model to delete this record
+    const deleteResult = await invModel.deleteInventoryItem(inv_id)
+
+    // If the delete worked, go back to management with success message
+    if (deleteResult) {
+      req.flash("notice", "The deletion was successful.")
+      return res.redirect("/inv/")
+    }
+
+    // If it failed, send user back to the delete page
+    req.flash("notice", "Sorry, the delete failed.")
+    return res.redirect(`/inv/delete/${inv_id}`)
+  } catch (error) {
+    console.error("[CTRL] deleteItem error:", error)
+    next(error)
+  }
+}
+
 // Export this controller so routes can call its functions
 module.exports = {
   buildByClassificationId: invCont.buildByClassificationId,
@@ -519,5 +629,6 @@ module.exports = {
   addInventory: invCont.addInventory, // POST
   getInventoryJSON: invCont.getInventoryJSON,
   buildEditInventory: invCont.buildEditInventory, // GET
-  updateInventory: invCont.updateInventory, // POST
+  deleteView: invCont.deleteView,  // GET
+  deleteItem: invCont.deleteItem,   // POST
 }
