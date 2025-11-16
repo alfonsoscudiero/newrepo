@@ -814,6 +814,11 @@ button[disabled] {
     opacity: 0.4;
     cursor: not-allowed;
 }
+/* Deletion Page */
+.secondary {
+    margin-top: -1rem;
+}
+
 /* ***************************
  *  ====== Larger screens ======   
  * ************************** */

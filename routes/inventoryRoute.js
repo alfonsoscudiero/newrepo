@@ -99,5 +99,24 @@ router.post(
   invValidate.checkUpdateData,      
   utilities.handleErrors(invController.updateInventory)
 )
+/* ***************************
+ *  Deliver Delete view 
+ * GET /inv/delete/:inv_id
+ * Module 06 - Week 09
+ * ************************** */
+router.get(
+  "/delete/:inv_id",
+  utilities.handleErrors(invController.deleteView)
+)
+/* ****************************************
+ * Process the delete inventory request
+ * POST /inv/delete
+ * Module 06 | Delete Inventory
+ **************************************** */
+router.post(
+  "/delete",
+  utilities.handleErrors(invController.deleteItem)
+)
+
 
 module.exports = router

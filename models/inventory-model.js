@@ -260,6 +260,34 @@ async function updateInventory(
         return null
     }
 }
+/* ***************************
+ *  Delete inventory item by id
+ *  Used by invController.deleteItem
+ *  Module 06 | Delete Activity
+ * ************************** */
+async function deleteInventoryItem(inv_id) {
+    try {
+        const id = Number(inv_id)
+        console.log("[MODEL] deleteInventoryItem id =", id)
+
+        const sql = `
+        DELETE FROM public.inventory
+        WHERE inv_id = $1
+        `
+        const result = await pool.query(sql, [id])
+
+        console.log(
+        "[MODEL] deleteInventoryItem -> rowCount:",
+        result.rowCount
+        )
+
+        // return true/false for the controller
+        return result.rowCount && result.rowCount > 0
+    } catch (error) {
+        console.error("[MODEL] deleteInventoryItem error:", error)
+        return null
+    }
+}
 
 // Export both functions together
 module.exports = {
@@ -270,4 +298,5 @@ module.exports = {
     getClassificationById,
     addInventory, 
     updateInventory,
+    deleteInventoryItem,
 };
