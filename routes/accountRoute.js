@@ -1,6 +1,5 @@
 /* ***************************
  *  routes/accountRoute.js
-Module 05 -Deliver login view    
  * ************************** */
 const express = require("express"); //Bring in Express
 const router = new express.Router(); //Create a new router instance
@@ -51,6 +50,16 @@ router.post(
   validate.registrationRules(),     // run validation checks
   validate.checkRegData,            // handle validation result
   utilities.handleErrors(accountController.registerAccount) // continue to controller
+)
+
+/* ***************************
+ *  Logout route
+ *  GET /account/logout
+ *  - Module 06 | Week 10 Task 1
+ * ************************** */
+router.get(
+  "/logout",
+  utilities.handleErrors(accountController.accountLogout)
 )
 
 /* ***************************
