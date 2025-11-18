@@ -155,16 +155,27 @@ Util.checkJWTToken = (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET,
       function (err, accountData) {
         if (err) {
+          console.error("[UTIL] checkJWTToken - verification failed:", err.message)
           req.flash("Please log in")
           res.clearCookie("jwt")
           return res.redirect("/account/login")
         }
+        // If successful, store the account data in res.locals
         res.locals.accountData = accountData
         res.locals.loggedin = 1
+        // Debug: show which user is logged in
+        console.log(
+          "[UTIL] checkJWTToken - token valid for:",
+          accountData.account_firstname,
+          accountData.account_email
+        )
         next()
       }
     )
   } else {
+    // No JWT cookie means the user is not logged in
+    res.locals.loggedin = 0
+    res.locals.accountData = null
     next()
   }
 }

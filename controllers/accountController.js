@@ -219,6 +219,29 @@ async function accountLogin(req, res) {
     throw new Error('Access Forbidden')
   }
 }
+/* ****************************************
+ *  Logout controller
+ *  GET /account/logout ***************************************** */
+async function accountLogout(req, res, next) {
+  try {
+    // Clear the JWT cookie
+    res.clearCookie("jwt")
+
+    // Reset locals for this response
+    res.locals.loggedin = 0
+    res.locals.accountData = null
+
+    // Optional flash message 
+    req.flash("notice", "You have successfully logged out.")
+
+    // Redirect to the homepage
+    return res.redirect("/")
+  } catch (error) {
+    console.error("[CTRL] accountLogout error:", error)
+    next(error)
+  }
+}
+
 
 // Export this controller so routes can call its functions
 module.exports = {
@@ -228,4 +251,5 @@ module.exports = {
   registerAccount, 
   accountLogin, 
   buildAccountManagement,
+  accountLogout,
 }
