@@ -192,7 +192,26 @@ Util.checkLogin = (req, res, next) => {
     return res.redirect("/account/login")  // If you are not logged in, you CANNOT see this page
   }
 }
-
+/* ****************************************
+ * Middleware to check if the logged-in user is an Employee or Admin
+ * -- Module 06 | Week 10 | Task 02
+ **************************************** */
+Util.checkEmployeeOrAdmin = (req, res, next) => {
+  // Extract the JWT-decoded data
+  const accountData = res.locals.accountData
+  // If there is no JWT or it failed validation
+  if (!accountData) {
+    req.flash("notice", "Please log in to manage inventory.")
+    return res.redirect("/account/login")
+  }
+  // If the user IS logged IN, but their role is Basic
+  if (accountData.account_type !== "Employee" && accountData.account_type !== "Admin") {
+    req.flash("notice", "You must be an Employee or Admin to manage inventory.")
+    return res.redirect("/account/login")
+  }
+  // If the user is Employee or Admin allow access
+  next()
+}
 /* ****************************************
  * Export all utility functions
  * so controllers and server.js can use them.

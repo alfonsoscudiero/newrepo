@@ -6,7 +6,7 @@
     <div id="tools">
       <% if (locals.loggedin && locals.accountData) { %>
         <% /* User IS logged in */ %>
-          Welcome <a href="/account/"><%= locals.accountData.account_firstname %></a>
+          <span class="welcome-text">Welcome </span><a href="/account/"><%= locals.accountData.account_firstname %></a>
         <a
           href="/account/logout">
           Logout

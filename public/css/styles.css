@@ -81,6 +81,12 @@ main {
     align-self: flex-start;
 }
 
+#tools .welcome-text {
+    color: var(--c-700);
+    font-size: 1rem;
+    font-weight: 300;
+}
+
 #tools a {
     font-weight: 300;
     font-size: 0.8rem;
