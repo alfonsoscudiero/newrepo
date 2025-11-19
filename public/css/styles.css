@@ -825,6 +825,24 @@ button[disabled] {
     margin-top: -1rem;
 }
 
+/* Management View */
+.acct-links .acct-link {
+    color: var(--or);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    font-weight: 600;
+    transition: color 0.25s ease, text-decoration 0.25s ease;
+}
+
+.acct-links .acct-link:hover {
+    color: var(--bright-or);
+    text-decoration: none;
+}
+
+.acct-links h3 {
+    margin: 2.5rem 0 0;
+}
+
 /* ***************************
  *  ====== Larger screens ======   
  * ************************** */
