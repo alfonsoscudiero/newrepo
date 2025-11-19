@@ -12,11 +12,14 @@ const invValidate = require("../utilities/inventory-validation")
 // Route to build the Home Page of the inventory section
 // GET /inv/
 router.get(
-  "/", utilities.handleErrors(invController.buildManagementView)
+  "/", 
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
+  utilities.handleErrors(invController.buildManagementView)
 )
 
 // Route to build inventory by classification view
 // GET /inv/type/:classificationId
+// Public Role
 router.get (
   "/type/:classificationId",
   utilities.handleErrors(invController.buildByClassificationId)
@@ -24,6 +27,7 @@ router.get (
 
 // Route to build a single vehicle detail view
 // GET /inv/detail/:inv_id
+// Public Role
 router.get(
   "/detail/:inv_id",
   utilities.handleErrors(invController.buildVehicleDetail)
@@ -35,6 +39,7 @@ router.get(
 // ----------------------------------------------
 router.get(
   "/add-classification",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   utilities.handleErrors(invController.buildAddClassification)
 )
 
@@ -43,7 +48,8 @@ router.get(
 // POST /inv/add-classification 
 // ----------------------------------------------
 router.post(
-  "/add-classification", 
+  "/add-classification",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   // Runs validation before controller
   invValidate.classificationRules(),
   invValidate.checkClassificationData,
@@ -56,6 +62,7 @@ router.post(
 // ----------------------------------------------
 router.get(
   "/add-inventory",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   utilities.handleErrors(invController.buildAddInventory)
 )
 
@@ -65,6 +72,7 @@ router.get(
 // ----------------------------------------------
 router.post(
   "/add-inventory",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   invValidate.inventoryRules(),
   invValidate.checkAddInventoryData,  // <-- use the actual name
   utilities.handleErrors(invController.addInventory)
@@ -75,6 +83,7 @@ router.post(
  * URL: /inv/getInventory/:classification_id
  **************************************** */
 router.get("/getInventory/:classification_id",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   utilities.handleErrors(invController.getInventoryJSON)
 )
 
@@ -85,6 +94,7 @@ router.get("/getInventory/:classification_id",
  **************************************** */
 router.get(
   "/edit/:inv_id", //The :inv_id parameter will receive the vehicle id from the "Modify" link
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   utilities.handleErrors(invController.buildEditInventory)
 )
 
@@ -95,17 +105,19 @@ router.get(
  * ************************** */
 router.post(
   "/update",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   invValidate.newInventoryRules(),  
   invValidate.checkUpdateData,      
   utilities.handleErrors(invController.updateInventory)
 )
 /* ***************************
- *  Deliver Delete view 
+ * Deliver Delete view 
  * GET /inv/delete/:inv_id
  * Module 06 - Week 09
  * ************************** */
 router.get(
   "/delete/:inv_id",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   utilities.handleErrors(invController.deleteView)
 )
 /* ****************************************
@@ -115,8 +127,8 @@ router.get(
  **************************************** */
 router.post(
   "/delete",
+  utilities.checkEmployeeOrAdmin, // Only Employee/Admin can see the management view
   utilities.handleErrors(invController.deleteItem)
 )
-
 
 module.exports = router
