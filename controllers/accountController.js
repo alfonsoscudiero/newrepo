@@ -320,8 +320,49 @@ async function updateAccount(req, res, next) {
     next(error)
   }
 }
+/* ****************************************
+ *  Process Password Update
+ *  POST /account/update-password
+ *  Module 06 | Week 10 Task 4 & 5
+ * **************************************** */
+async function updatePassword(req, res, next) {
+  // Pull form values
+  const { account_password, account_id } = req.body
 
+  try {
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(account_password, 10)
 
+    // Call the model to update the password in the database
+    const updateResult = await accountModel.updatePassword(
+      hashedPassword,
+      account_id
+    )
+
+    // If the update succeeded
+    if (updateResult) {
+      req.flash("notice", "Password updated successfully.")
+      return res.redirect("/account/")
+    }
+
+    // If update failed (no row updated)
+    const nav = await utilities.getNav()
+    const accountData = {
+      account_id,
+      // DO NOT return or prefill password
+    }
+    req.flash("notice", "Sorry, the password could not be updated.")
+    return res.render("account/update", {
+      title: "Edit Account",
+      nav,
+      errors: null,
+      accountData,
+    })
+  } catch (error) {
+    console.error("[CTRL] updatePassword error:", error)
+    next(error)
+  }
+}
 
 // Export this controller so routes can call its functions
 module.exports = {
@@ -334,4 +375,5 @@ module.exports = {
   accountLogout,
   buildUpdateAccount,
   updateAccount,
+  updatePassword,
 }
