@@ -1,0 +1,163 @@
+<% /* =============================================
+  views/account/update.ejs
+  Module 06 - Week 10 Task 4
+  Account Update + Change Password view
+  ============================================= */ %>
+
+<h1><%= title %></h1>
+
+<!-- Flash messages (success / notice, etc.) -->
+<%- messages() %>
+
+<!-- Server-side validation errors -->
+<% if (errors && errors.array) { %>
+  <ul class="notice-registration">
+    <% errors.array().forEach((error) => { %>
+      <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<section class="account-update-page">
+  <!-- ===========================
+  ACCOUNT INFO UPDATE FORM
+  =========================== -->
+  <article class="form-card account-form-card">
+    <h2>Update Account Information</h2>
+    <p class="form-helper-text">
+      You can update your first name, last name, or email address here.
+      All fields are required.
+    </p>
+
+    <!-- 
+      Form 1: Update first name, last name, email
+      - Action URL will be handled by the POST route in accountRoute.js
+      - Method: POST
+    -->
+    <form
+      class="account-form"
+      action="/account/update"
+      method="post"
+    >
+      <!-- First Name -->
+      <div class="form-field">
+        <label for="account_firstname">First Name</label>
+        <input
+          type="text"
+          id="account_firstname"
+          name="account_firstname"
+          required
+          minlength="2"
+          placeholder="First name"
+          value="<%= locals.account_firstname ?? accountData.account_firstname %>"
+        >
+      </div>
+
+      <!-- Last Name -->
+      <div class="form-field">
+        <label for="account_lastname">Last Name</label>
+        <input
+          type="text"
+          id="account_lastname"
+          name="account_lastname"
+          required
+          minlength="2"
+          placeholder="Last name"
+          value="<%= locals.account_lastname ?? accountData.account_lastname %>"
+        >
+      </div>
+
+      <!-- Email -->
+      <div class="form-field">
+        <label for="account_email">Email</label>
+        <input
+          type="email"
+          id="account_email"
+          name="account_email"
+          required
+          placeholder="you@example.com"
+          value="<%= locals.account_email ?? accountData.account_email %>"
+        >
+      </div>
+
+      <!-- Hidden account_id so the server knows which account to update -->
+      <input
+        type="hidden"
+        name="account_id"
+        value="<%= accountData.account_id %>"
+      >
+
+      <!-- Submit button for updating account info -->
+      <button type="submit" class="btn-primary">
+        Update Account
+      </button>
+    </form>
+  </article>
+
+    <!-- ===========================
+    CHANGE PASSWORD FORM
+    =========================== -->
+  <article class="form-card account-form-card">
+    <h2>Update Password</h2>
+    <p class="form-helper-text">
+      Passwords must be at least 12 characters and include at least
+      1 capital letter, 1 number, and 1 special character.
+    </p>
+    <p class="form-helper-text small">
+      *Note: your original password will be changed.
+    </p>
+
+    <!-- 
+      Form 2: Change password
+      - Completely separate form from account info
+      - Uses the same password rules as registration on the server side
+    -->
+    <form
+      class="account-form"
+      action="/account/update-password"
+      method="post"
+    >
+      <!-- New Password -->
+      <div class="form-field">
+        <label for="account_password">New Password</label>
+        <input
+          type="password"
+          id="account_password"
+          name="account_password"
+          required
+          minlength="12"
+          autocomplete="new-password"
+          placeholder="Enter new password"
+          pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$"
+          title="Must be at least 12 characters, include 1 capital letter, 1 number, and 1 special character"
+        >
+        <small class="field-note">
+          Passwords must be minimum of 12 characters and include 1 capital letter, 1 number, and 1 special character.
+        </small>
+      </div>
+
+      <!-- Hidden account_id  -->
+      <input
+        type="hidden"
+        name="account_id"
+        value="<%= accountData.account_id %>"
+      >
+
+      <!-- Show / hide password toggle button -->
+      <button
+        type="button"
+        id="togglePassword"
+        class="btn-secondary"
+      >
+        Show Password
+      </button>
+
+      <!-- Submit button  -->
+      <button type="submit" class="btn-primary">
+        Change Password
+      </button>
+    </form>
+  </article>
+</section>
+
+<script src="/js/toggle-password.js"></script>
