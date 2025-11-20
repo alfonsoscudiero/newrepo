@@ -69,13 +69,8 @@ validate.registrationRules = () => {
 validate.checkRegData = async (req, res, next) => {
   const errors = validationResult(req)
 
-  /* ===== TEMPORARY DEBUG LOGS (for VS Code terminal) =====
-  You can delete or comment these out after verifying.
-  --------------------------------------------------------- */
-  console.log("Validation result object:", errors)
-  console.log("Error messages (if any):", errors.array())
-  /* ================== END TEMPORARY DEBUG ================= */
-
+  // console.log("Validation result object:", errors)
+  // console.log("Error messages (if any):", errors.array())
 
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav() // keep site nav available to layout
@@ -83,15 +78,13 @@ validate.checkRegData = async (req, res, next) => {
     return res.render("account/register", {
       title: "Register",
       nav,
-      errors, // <-- pass the whole result object (DO NOT use errors.array() here)
+      errors,
       account_firstname: req.body.account_firstname,
       account_lastname: req.body.account_lastname,
       account_email: req.body.account_email,
     })
   }
-
-  // No validation errors → continue to controller
-  console.log("Validation passed — proceeding to controller.") // TEMPORARY DEBUG
+  // console.log("Validation passed — proceeding to controller.") // TEMPORARY DEBUG
   next()
 }
 
@@ -115,14 +108,13 @@ validate.loginRules = () => {
 
 /* ******************************
  * Check login data and return errors or continue
- *  - On error, re-render login.ejs with messages
- * Module 06 - Week09
+ * On error, re-render login.ejs with messages
+ * Module 06 - Week 09
  * ****************************** */
 validate.checkLoginData = async (req, res, next) => {
   const errors = validationResult(req)
-
-  console.log("Login validation result object:", errors)
-  console.log("Login error messages (if any):", errors.array())
+  // console.log("Login validation result object:", errors)
+  // console.log("Login error messages (if any):", errors.array())
 
   if (!errors.isEmpty()) {
     const nav = await utilities.getNav()
@@ -134,10 +126,118 @@ validate.checkLoginData = async (req, res, next) => {
       account_email: req.body.account_email,
     })
   }
-
-  console.log("Login validation passed — proceeding to controller.")
+  // console.log("Login validation passed — proceeding to controller.")
   next()
 }
+/* ******************************
+ * Update Account Data Validation Rules
+ *  Module 06 - Week 10 Task 4 & 5
+ * ****************************** */
+validate.updateAccountRules = () => {
+  return [
+    body("account_firstname")
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Please provide a first name."),
 
+    body("account_lastname")
+      .trim()
+      .escape()
+      .notEmpty()
+      .withMessage("Please provide a last name.")
+      .bail()
+      .isLength({ min: 2 })
+      .withMessage("Last name must be at least 2 characters long."),
+
+    body("account_email")
+      .trim()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("Please provide a valid email address.")
+    //   .custom(async (account_email, { req }) => {
+    //   const emailExists = await accountModel.checkExistingEmail(account_email)
+    //   if (emailExists) {
+    //     throw new Error("Email exists. Please log in or use different email")
+    //   }
+    // }),
+  ]
+}
+
+/* ******************************
+ * Check Update Account data
+ * On error, re-render account/update.ejs
+ * Module 06 - Week 10 Task 4 & 5
+ * ****************************** */
+validate.checkUpdateAccountData = async (req, res, next) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav()
+    let accountData = res.locals.accountData || {}
+    accountData = {
+      ...accountData,
+      account_firstname: req.body.account_firstname,
+      account_lastname: req.body.account_lastname,
+      account_email: req.body.account_email,
+      account_id: req.body.account_id,
+    }
+
+    return res.render("account/update", {
+      title: "Edit Account",
+      nav,
+      errors,
+      accountData,
+    })
+  }
+
+  // No validation errors → continue to controller
+  next()
+}
+/* ******************************
+ * Update Password Validation Rules
+ * Reuse the same strong password rules as registration
+ * Module 06 - Week 10 Task 4 & 5
+ * ****************************** */
+validate.updatePasswordRules = () => {
+  return [
+    body("account_password")
+      .isStrongPassword({
+        minLength: 12,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+      })
+      .withMessage("Password does not meet requirements."),
+  ]
+}
+/* ******************************
+ * Check Update Password data
+ * On error, re-render account/update.ejs
+ * Module 06 - Week 10 Task 4 & 5
+ * ****************************** */
+validate.checkUpdatePasswordData = async (req, res, next) => {
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const nav = await utilities.getNav()
+
+    let accountData = res.locals.accountData || {}
+    accountData = {
+      ...accountData,
+      account_id: req.body.account_id, // keep id from the form
+    }
+
+    return res.render("account/update", {
+      title: "Edit Account",
+      nav,
+      errors,
+      accountData,
+    })
+  }
+  // No validation errors → continue to controller
+  next()
+}
 
 module.exports = validate
