@@ -244,7 +244,7 @@ async function accountLogout(req, res, next) {
 /* ****************************************
  *  Build Edit Account View
  *  GET /account/update/:account_id
- * Module 06 | Week 10 Task 4 & 5
+ *  Module 06 | Week 10 Task 4 & 5
  * **************************************** */
 async function buildUpdateAccount(req, res, next) {
   try {
@@ -272,6 +272,54 @@ async function buildUpdateAccount(req, res, next) {
     next(error)
   }
 }
+/* ****************************************
+ *  Process Account Information Update
+ *  POST /account/update
+ *  Module 06 | Week 10 Task 4 & 5
+ * **************************************** */
+async function updateAccount(req, res, next) {
+  // Pull the values from the form
+  const {
+    account_firstname,
+    account_lastname,
+    account_email,
+    account_id,
+  } = req.body
+
+  try {
+    // Call the model to update the record in the database.
+    const updateResult = await accountModel.updateAccount(
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id
+    )
+    // If the update is successful
+    if (updateResult) {
+      req.flash("notice", "Account information updated successfully.")
+      return res.redirect("/account/")
+    }
+
+    // If something went wrong re-render the form (but no thrown error)
+    const nav = await utilities.getNav()
+    const accountData = {
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id,
+    }
+    req.flash("notice", "Sorry, the account information could not be updated.")
+    return res.render("account/update", {
+      title: "Edit Account",
+      nav,
+      errors: null,
+      accountData,
+    })
+  } catch (error) {
+    console.error("[CTRL] updateAccount error:", error)
+    next(error)
+  }
+}
 
 
 
@@ -285,4 +333,5 @@ module.exports = {
   buildAccountManagement,
   accountLogout,
   buildUpdateAccount,
+  updateAccount,
 }
