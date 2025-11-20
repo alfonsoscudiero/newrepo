@@ -241,6 +241,38 @@ async function accountLogout(req, res, next) {
     next(error)
   }
 }
+/* ****************************************
+ *  Build Edit Account View
+ *  GET /account/update/:account_id
+ * Module 06 | Week 10 Task 4 & 5
+ * **************************************** */
+async function buildUpdateAccount(req, res, next) {
+  try {
+    // Build the navigation for the layout
+    const nav = await utilities.getNav()
+    // Get the logged-in user's account data from res.locals
+    const accountData = res.locals.accountData
+
+    // Make sure the route id matches the logged-in account
+    const routeAccountId = Number(req.params.account_id)
+    if (!accountData || accountData.account_id !== routeAccountId) {
+      req.flash("notice", "You are not authorized to edit that account.")
+      return res.redirect("/account/")
+    }
+
+    // Render the "Edit Account" view with the current account data
+    return res.render("account/update", {
+      title: "Edit Account",
+      nav,
+      errors: null,    // no validation errors yet on a GET
+      accountData,     // used to pre-fill the form fields
+    })
+  } catch (error) {
+    console.error("[CTRL] buildUpdateAccount error:", error)
+    next(error)
+  }
+}
+
 
 
 // Export this controller so routes can call its functions
@@ -252,4 +284,5 @@ module.exports = {
   accountLogin, 
   buildAccountManagement,
   accountLogout,
+  buildUpdateAccount,
 }

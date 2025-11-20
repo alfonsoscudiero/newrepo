@@ -176,7 +176,7 @@ validate.checkUpdateAccountData = async (req, res, next) => {
     const nav = await utilities.getNav()
     let accountData = res.locals.accountData || {}
     accountData = {
-      ...accountData,
+      ...accountData, // keep existing (DB/JWT) values
       account_firstname: req.body.account_firstname,
       account_lastname: req.body.account_lastname,
       account_email: req.body.account_email,
