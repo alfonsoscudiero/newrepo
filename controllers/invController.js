@@ -435,10 +435,13 @@ invCont.buildEditInventory = async function (req, res, next) {
  ****************************** */
 invCont.updateInventory = async function (req, res, next) {
   try {
-    // 1) Build the nav
+    // Check incoming body
+    console.log("[CTRL] updateInventory received body:", req.body);
+
+    // Build the nav
     const nav = await utilities.getNav()
 
-    // 2) Get updated values from the form
+    // Get updated values from the form
     const {
       inv_id,
       inv_make,
@@ -453,7 +456,7 @@ invCont.updateInventory = async function (req, res, next) {
       classification_id,
     } = req.body
 
-    // 3) Send data to the model to run the UPDATE query
+    // Send data to the model to run the UPDATE query
     const updateResult = await invModel.updateInventory(
       inv_id,
       inv_make,
@@ -468,14 +471,14 @@ invCont.updateInventory = async function (req, res, next) {
       classification_id
     )
 
-    // 4) If the update worked, flash success and go back to management view
+    // If the update worked, flash success and go back to management view
     if (updateResult) {
       const itemName = `${inv_make} ${inv_model}`
       req.flash("notice", `The ${itemName} was successfully updated.`)
       return res.redirect("/inv/")
     }
 
-    // 5) If the update failed, rebuild dropdown and re-render edit view
+    // If the update failed, rebuild dropdown and re-render edit view
     let classifications = []
     if (typeof invModel.getClassifications === "function") {
       classifications = await invModel.getClassifications()
@@ -629,6 +632,7 @@ module.exports = {
   addInventory: invCont.addInventory, // POST
   getInventoryJSON: invCont.getInventoryJSON,
   buildEditInventory: invCont.buildEditInventory, // GET
+  updateInventory: invCont.updateInventory, 
   deleteView: invCont.deleteView,  // GET
   deleteItem: invCont.deleteItem,   // POST
 }
