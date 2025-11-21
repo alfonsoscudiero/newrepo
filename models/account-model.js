@@ -54,9 +54,64 @@ async function checkExistingEmail(account_email) {
   }
 }
 
+/* ****************************************
+ *  Account Information Update
+ *  POST /account/update
+ *  Module 06 | Week 10 Task 4 & 5
+ * **************************************** */
+async function updateAccount(account_firstname, account_lastname, account_email, account_id) {
+  try {
+    const sql = `
+      UPDATE account
+      SET
+        account_firstname = $1,
+        account_lastname  = $2,
+        account_email     = $3
+      WHERE account_id    = $4
+    `
+
+    const data = await pool.query(sql, [
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_id,
+    ])
+
+    // data.rowCount will be 1 if the update succeeded, 0 if nothing changed
+    return data.rowCount
+  } catch (error) {
+    console.error("updateAccount model error:", error)
+    throw error
+  }
+}
+
+/* ****************************************
+ *  Update Account Password
+ *  Module 06 - Week 10 Task 4 & 5
+ * **************************************** */
+async function updatePassword(hashedPassword, account_id) {
+  try {
+    const sql = `
+      UPDATE account
+      SET account_password = $1
+      WHERE account_id     = $2
+    `
+
+    const data = await pool.query(sql, [hashedPassword, account_id])
+
+    // Again, rowCount will be 1 if one row was updated
+    return data.rowCount
+  } catch (error) {
+    console.error("updatePassword model error:", error)
+    return null
+  }
+}
+
 // Export model functions
 module.exports = {
   getAccountByEmail,
   registerAccount,
   checkExistingEmail,
+  updateAccount,
+  updatePassword,
 }
