@@ -87,6 +87,10 @@ main {
     font-weight: 300;
 }
 
+#tools .separator {
+    opacity: 0.6;
+}
+
 #tools a {
     font-weight: 300;
     font-size: 0.8rem;
@@ -842,6 +846,8 @@ button[disabled] {
 .acct-links h3 {
     margin: 2.5rem 0 0;
 }
+
+/* Edit Account Page - update.ejs */
 
 /* ***************************
  *  ====== Larger screens ======   
