@@ -294,8 +294,42 @@ async function updateAccount(req, res, next) {
       account_email,
       account_id
     )
+
     // If the update is successful
     if (updateResult) {
+      /* ****************************************
+       *  This ensures that the header will immediately show
+       *  "Welcome NewName" without requiring a logout/login.
+       * **************************************** */
+      // Retrieve the updated account from the database
+      const freshAccountData = await accountModel.getAccountById(account_id)
+
+      if (freshAccountData) {
+        // Remove the password before signing the token
+        delete freshAccountData.account_password
+
+        // Create a new JWT using the updated data
+        const accessToken = jwt.sign(
+          freshAccountData,
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: 3600 * 1000 }
+        )
+
+        // Store the new token in the cookie
+        if (process.env.NODE_ENV === "development") {
+          res.cookie("jwt", accessToken, {
+            httpOnly: true,
+            maxAge: 3600 * 1000,
+          })
+        } else {
+          res.cookie("jwt", accessToken, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 3600 * 1000,
+          })
+        }
+      }
+
       req.flash("notice", "Account information updated successfully.")
       return res.redirect("/account/")
     }
@@ -320,6 +354,7 @@ async function updateAccount(req, res, next) {
     next(error)
   }
 }
+
 /* ****************************************
  *  Process Password Update
  *  POST /account/update-password

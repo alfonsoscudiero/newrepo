@@ -17,9 +17,11 @@ async function getAccountByEmail (account_email) {
       'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password FROM account WHERE account_email = $1',
       [account_email]
     )
+    
     return result.rows[0]
   } catch (error) {
-    return new Error("No matching email found")
+    console.error("[MODEL] getAccountByEmail error:", error)
+    return null
   }
 }
 
@@ -37,7 +39,8 @@ async function registerAccount(account_firstname, account_lastname, account_emai
     return await pool.query(sql, [account_firstname, account_lastname, account_email, account_password])
   } catch (error) {
     // If something goes wrong (like duplicate email or DB issue), return the error message
-    return error.message
+    console.error("[MODEL] registerAccount error:", error)
+    return null
   }
 }
 
@@ -50,7 +53,8 @@ async function checkExistingEmail(account_email) {
     const email = await pool.query(sql, [account_email])
     return email.rowCount // 0 means no match; >0 means email exists
   } catch (error) {
-    return error.message
+    console.error("[MODEL] checkExistingEmail error:", error)
+    return null
   }
 }
 
@@ -107,6 +111,25 @@ async function updatePassword(hashedPassword, account_id) {
   }
 }
 
+/* ****************************************
+ *  Update Account Password
+ *  Module 06 - Week 10 Task 4 & 5
+ * **************************************** */
+async function getAccountById (account_id) {
+  try {
+    const sql = `
+      SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password
+      FROM account
+      WHERE account_id = $1
+    `
+    const result = await pool.query(sql, [account_id])
+    return result.rows[0] || null
+  } catch (error) {
+    console.error("getAccountById model error:", error)
+    return null
+  }
+}
+
 // Export model functions
 module.exports = {
   getAccountByEmail,
@@ -114,4 +137,5 @@ module.exports = {
   checkExistingEmail,
   updateAccount,
   updatePassword,
+  getAccountById,
 }
