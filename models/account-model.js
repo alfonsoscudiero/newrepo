@@ -117,12 +117,16 @@ async function updatePassword(hashedPassword, account_id) {
  * **************************************** */
 async function getAccountById (account_id) {
   try {
+    // Query to retrieve a single account record using its ID
     const sql = `
       SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_password
       FROM account
       WHERE account_id = $1
     `
+    // Send the SQL statement to PostgreSQL and retrieve the account data
     const result = await pool.query(sql, [account_id])
+    // If the account exists, returns the full account object
+    // If no record is found or an error occurs, returns null
     return result.rows[0] || null
   } catch (error) {
     console.error("getAccountById model error:", error)
