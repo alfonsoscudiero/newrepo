@@ -1,8 +1,11 @@
 <!-- views/inventory/details.ejs -->
+
 <section id="inv-detail">
-  <div class="detail-container">
+  < class="detail-container">
+    <!-- Vehicle title -->
     <h1><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
 
+    <!-- Main vehicle details layout -->
     <div class="detail-wrapper">
       <!-- Vehicle Image -->
       <div class="detail-media">
@@ -18,7 +21,45 @@
         <div class="field"><b>Color:</b> <%= vehicle.inv_color %></div>
         <div class="field"><b>Miles:</b> <%= milesFormatted %></div>
       </div>
-    </div>
+    </div> 
+    
+    <!-- Review Section -->
+    <div class="reviews-section">
+    <h3>Customer Reviews</h3>
+    <% 
+    // Use the reviews array sent by the controller.
+    // If for some reason it's missing, fall back to an empty array.
+    const reviewList = (typeof reviews !== "undefined" && Array.isArray(reviews)) ? reviews : [];
+    %>
+
+    <!-- If there are NO reviews for this vehicle -->
+    <% if (reviewList.length === 0) { %>
+      <p class="reviews-empty">Be the first to write a review</p>
+    <% } else { %>
+
+      <!-- If there ARE reviews, show them as simple cards -->
+      <div class="reviews-list">
+        <% reviewList.forEach(function (review) { %>
+          <article class="review-card">
+            <!-- Name + date -->
+            <div class="review-meta">
+              <div class="review-name"><%= review.review_screenname %></div>
+              <div class="review-date"><%= review.review_date_formatted %></div>
+            </div>
+
+            <!-- Review text -->
+            <p class="review-text"><%= review.review_text %></p>
+          </article>
+        <% }) %>
+      </div>
+
+    <% } %>
+
+    <% /* If user is NOT logged in */ %>
+    <% if (!loggedin) { %>
+    <p>You must <a href="/account/login">login</a> to write a review</p>
+    <% } %>
   </div>
+
 
 </section>
