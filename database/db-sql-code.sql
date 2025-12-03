@@ -249,3 +249,27 @@ SET inv_image = REPLACE(inv_image, '/vehicles/vehicles/', '/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/vehicles/vehicles/', '/vehicles/')
 WHERE inv_image LIKE '%/vehicles/vehicles/%'
     OR inv_thumbnail LIKE '%/vehicles/vehicles/%';
+
+-- Table structure for table `review` Final Project
+CREATE TABLE public.review (
+    review_id INT GENERATED ALWAYS AS IDENTITY,
+    review_text TEXT NOT NULL,
+    review_date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    inv_id INT NOT NULL,
+    account_id INT NOT NULL,
+
+    CONSTRAINT review_pk PRIMARY KEY (review_id),
+
+    -- FK belongs to a vehicle
+    CONSTRAINT review_inv_fk
+        FOREIGN KEY (inv_id)
+        REFERENCES public.inventory (inv_id)
+        ON DELETE CASCADE,
+
+    -- FK belongs to a user
+    CONSTRAINT review_account_fk
+        FOREIGN KEY (account_id)
+        REFERENCES public.account (account_id)
+        ON DELETE CASCADE
+);
