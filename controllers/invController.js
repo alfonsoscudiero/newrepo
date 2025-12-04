@@ -4,6 +4,8 @@
 const invModel = require("../models/inventory-model")
 // Bring in shared utility functions (navigation builder, grid builder, etc.)
 const utilities = require("../utilities/")
+// Review model to fetch reviews for a vehicle | Final Project
+const reviewModel = require ("../models/review-model")
 // Create a controller object to hold related functions
 const invCont = {}
 
@@ -100,7 +102,7 @@ invCont.buildVehicleDetail = async function (req, res, next) {
       return next({ status: 404, message: "Invalid vehicle Id." })
     }
 
-    // 1) Fetch the vehicle
+    // Fetch the vehicle
     const vehicle = await invModel.getVehicleById(inv_id)
 
     // ====== Assignment 3 intentional 500 for footer link ======
@@ -115,7 +117,35 @@ invCont.buildVehicleDetail = async function (req, res, next) {
       return next({ status: 404, message: "Vehicle not found." })
     }
 
-    // 2) Nav + computed fields
+    // Fetch reviews for this vehicle
+    let reviews = [];
+    try {
+      // Ask review model for this car's reviews
+      reviews = await reviewModel.getReviewsByInvId(inv_id)
+      
+      // Apply fromatting to each review
+      reviews = reviews.map(r => {
+        return {
+          ...r,
+          review_screenname: utilities.buildScreenName(r.account_firstname, r.account_lastname),
+          review_date_formatted: utilities.formatReviewDate(r.review_date)
+        }
+      })
+
+    } catch (reviewErr) {
+        console.error("[CTRL] Error fetching reviews:", reviewErr);
+        reviews = [];
+    }
+    // Ensure we always work with an array
+    reviews = Array.isArray(reviews) ? reviews : []
+
+    // Sort newest first by review_date
+    reviews.sort((a, b) => new Date(b.review_date) - new Date(a.review_date))
+
+    // Convenience flag for the EJS view
+    const hasReviews = reviews.length > 0
+
+    // Nav + computed fields
     const nav = await utilities.getNav()
     const name = `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`
 
@@ -131,7 +161,19 @@ invCont.buildVehicleDetail = async function (req, res, next) {
 
     // console.log("[CTRL] rendering details for:", name)
 
-    // 3) Render the view
+    const loggedin = res.locals.loggedin || false // Boolean if the user is logged in
+    const accountData = res.locals.accountData || null // user info for the review form
+    const accountId = accountData ? accountData.account_id : null 
+    // Build screen name from account data (first name + last name)
+    let screenName = ""
+    if (accountData) {
+      screenName = utilities.buildScreenName(
+        accountData.account_firstname,
+        accountData.account_lastname
+      )
+    }
+
+    // Render the view
     res.render("inventory/details", {
       title: name,
       nav,
@@ -139,6 +181,13 @@ invCont.buildVehicleDetail = async function (req, res, next) {
       vehicle,
       priceFormatted,
       milesFormatted,
+      // Data sent to the EJS view
+      reviews, // Array of reviews (newest first)
+      hasReviews, // Boolean if the vehicle has reviews or “no reviews” message
+      loggedin, // Toggle between login prompt vs form
+      accountId, // for hidden <input> in the review form
+      inv_id, // know which vehicle this review belongs to
+      screenName,
     })
   } catch (error) {
     console.error("[CTRL] Error building vehicle detail:", error)
