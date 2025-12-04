@@ -958,6 +958,59 @@ button[disabled] {
     width: auto;
 }
 
+/* Review Section */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.review-card {
+    background: var(--wh);
+    border-radius: 0.75rem;
+    border: 1px solid var(--c-100);
+    padding: 1rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.review-meta {
+    margin-bottom: 0.25rem;
+}
+
+.review-name {
+    font-weight: 600;
+    color: var(--c-600)
+}
+
+.review-date {
+    font-size: 0.85rem;
+    color: var(--c-400);
+    /* margin-bottom: 0.5rem; */
+}
+
+.review-text {
+    line-height: 1.5;
+    color: var(--c-800);
+}
+
+.reviews-empty {
+    color: var(--c-800);
+    font-weight: 600;    
+}
+
+.reviews-section a {
+    color: var(--c-700);
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.reviews-section a:hover {
+    color: var(--bright-or);
+}
+
 /* ***************************
  *  ====== Larger screens ======   
  * ************************** */
@@ -967,7 +1020,8 @@ button[disabled] {
     }
 
     body {
-        background: url('../images/site/small_check.jpg');
+        /* background: url('../images/site/small_check.jpg'); */
+        background: url('../images/site/floating-cogs.svg');
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;

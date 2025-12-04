@@ -1,7 +1,7 @@
 <!-- views/inventory/details.ejs -->
 
 <section id="inv-detail">
-  < class="detail-container">
+  <div class="detail-container">
     <!-- Vehicle title -->
     <h1><%= vehicle.inv_year %> <%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
 
@@ -24,42 +24,63 @@
     </div> 
     
     <!-- Review Section -->
+    <!-- Final Project | Weeks 12-14 -->
     <div class="reviews-section">
-    <h3>Customer Reviews</h3>
-    <% 
-    // Use the reviews array sent by the controller.
-    // If for some reason it's missing, fall back to an empty array.
-    const reviewList = (typeof reviews !== "undefined" && Array.isArray(reviews)) ? reviews : [];
-    %>
+      <h3>Customer Reviews</h3>
+      <!-- If there are reviews -->
+      <% if (hasReviews) { %>
+        <div class="reviews-list">
+          <% reviews.forEach(function (review) { %>
+            <article class="review-card">
+              <!-- Name + date -->
+              <div class="review-meta">
+                <div class="review-name"><%= review.review_screenname %></div>
+                <div class="review-date"><%= review.review_date_formatted %></div>
+              </div>
 
-    <!-- If there are NO reviews for this vehicle -->
-    <% if (reviewList.length === 0) { %>
-      <p class="reviews-empty">Be the first to write a review</p>
-    <% } else { %>
+              <!-- Review text -->
+              <p class="review-text"><%= review.review_text %></p>
+            </article>
+          <% }) %>
+        </div>
+      <!-- If there are NO reviews -->
+      <% } else { %>
+        <p class="reviews-empty">Be the first to write a review</p>
+      <% } %>
 
-      <!-- If there ARE reviews, show them as simple cards -->
-      <div class="reviews-list">
-        <% reviewList.forEach(function (review) { %>
-          <article class="review-card">
-            <!-- Name + date -->
-            <div class="review-meta">
-              <div class="review-name"><%= review.review_screenname %></div>
-              <div class="review-date"><%= review.review_date_formatted %></div>
-            </div>
+      <!-- If NOT logged in -->
+      <% if (!loggedin) { %>
+        <p class="login-message">
+          <a href="/account/login">Log in to add a review.</a>
+        </p>
 
-            <!-- Review text -->
-            <p class="review-text"><%= review.review_text %></p>
-          </article>
-        <% }) %>
-      </div>
+      <!-- If logged in -->
+      <% } else { %>
+        <h4>Add Your Own Review</h4>
+        <form action="/reviews/add" method="post" class="review-form">
+          <label for="screen_name">Screen Name:
+            <input 
+              type="text" 
+              id="screen_name"
+              name="screen_name"
+              value="<%= screenName %>"
+              readonly
+            >
+          </label>
+          <textarea 
+            name="review_text" 
+            required 
+            placeholder="Write your review..."
+          ></textarea>
 
-    <% } %>
+          <!-- Hidden fields -->
+          <input type="hidden" name="inv_id" value="<%= inv_id %>">
+          <input type="hidden" name="account_id" value="<%= accountId %>">
 
-    <% /* If user is NOT logged in */ %>
-    <% if (!loggedin) { %>
-    <p>You must <a href="/account/login">login</a> to write a review</p>
-    <% } %>
-  </div>
+          <button type="submit" class="btn primary">Submit Review</button>
+        </form>
+      <% } %>
 
-
+    </div><!-- end reviews-section -->
+  </div> <!-- end .detail-container -->
 </section>
