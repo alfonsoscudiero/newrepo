@@ -212,6 +212,30 @@ Util.checkEmployeeOrAdmin = (req, res, next) => {
   // If the user is Employee or Admin allow access
   next()
 }
+
+/* ****************************************
+ * Build screen name: First initial + last name (no spaces)
+ * Final Project - Review Form
+ **************************************** */
+Util.buildScreenName = function buildScreenName(firstname, lastname) {
+  if (!firstname || !lastname) return "Anonymous"
+  const firstInitial = firstname.trim()[0].toUpperCase()
+  return `${firstInitial}${lastname.trim()}`
+}
+
+/* ****************************************
+ * Format review date
+ * Final Project - Review Form
+ **************************************** */
+Util.formatReviewDate = function formatReviewDate(rawDate) {
+  if (!rawDate) return ""
+  return new Date(rawDate).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  })
+}
+
 /* ****************************************
  * Export all utility functions
  * so controllers and server.js can use them.
