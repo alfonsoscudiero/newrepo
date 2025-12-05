@@ -56,29 +56,45 @@
 
       <!-- If logged in -->
       <% } else { %>
-        <h4>Add Your Own Review</h4>
-        <form action="/reviews/add" method="post" class="review-form">
-          <label for="screen_name">Screen Name:
-            <input 
-              type="text" 
-              id="screen_name"
-              name="screen_name"
-              value="<%= screenName %>"
-              readonly
-            >
-          </label>
-          <textarea 
-            name="review_text" 
-            required 
-            placeholder="Write your review..."
-          ></textarea>
+        <!-- Server-side validation errors -->
+        <% if (typeof errors !== "undefined" && !errors.isEmpty()) { %>
+          <ul class="notice">
+            <% errors.array().forEach(error => { %>
+              <li><%= error.msg %></li>
+            <% }) %>
+          </ul>
+        <% } %>
 
-          <!-- Hidden fields -->
-          <input type="hidden" name="inv_id" value="<%= inv_id %>">
-          <input type="hidden" name="account_id" value="<%= accountId %>">
+        <div class="review-form-card">
+          <h4>Leave a Review</h4>
+          <form action="/reviews/add" method="post" class="review-form">
+            <!-- Screen name (read-only) -->
+            <label for="screen_name">Screen Name:
+              <input 
+                type="text" 
+                id="screen_name"
+                name="screen_name"
+                value="<%= screenName %>"
+                readonly
+              >
+            </label>
+            <!-- Review text -->
+            <label for="review_text">Review:</label>
+            <textarea 
+              name="review_text" 
+              required 
+              placeholder="Write your review..."
+              autofocus
+              <%= typeof review_text !== "undefined" ? review_text : "" %>
+            ></textarea>
+            <!-- Hidden fields -->
+            <input type="hidden" name="inv_id" value="<%= inv_id %>">
+            <input type="hidden" name="account_id" value="<%= accountId %>">
 
-          <button type="submit" class="btn primary">Submit Review</button>
-        </form>
+            <button type="submit" class="btn primary">Submit Review</button>
+          </form>
+
+        </div> <!-- end review-form-card -->
       <% } %>
 
     </div><!-- end reviews-section -->
