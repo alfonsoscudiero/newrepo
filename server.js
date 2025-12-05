@@ -22,6 +22,8 @@ const inventoryRoute = require('./routes/inventoryRoute');
 const utilities = require('./utilities/');
 // Enable account routes (handles /account/* paths like /account/login) - Module 05
 const accountRoute = require("./routes/accountRoute");
+// Enable review routes (handles /reviews/* paths - Module 07 | Final Project)
+const reviewRoute = require("./routes/reviewRoute")
 
 /* ***********************
  * View Engine and Templates
@@ -74,6 +76,8 @@ app.get('/', utilities.handleErrors(baseController.buildHome))
 app.use('/inv', inventoryRoute); 
 // Module 05 - Anything defined in routes/accountRoute.js is now reachable under /account 
 app.use("/account", accountRoute); //Account route
+// Module 07: Review route
+app.use("/reviews", reviewRoute);
 
 /* ***********************
  * Express Error Handler - Global error handler (INLINE)

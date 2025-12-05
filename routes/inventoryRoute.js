@@ -122,7 +122,7 @@ router.get(
 )
 /* ****************************************
  * Process the delete inventory request
- * POST /inv/delete
+ * POST /reviews/add
  * Module 06 | Delete Inventory
  **************************************** */
 router.post(

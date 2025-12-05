@@ -123,12 +123,13 @@ invCont.buildVehicleDetail = async function (req, res, next) {
       // Ask review model for this car's reviews
       reviews = await reviewModel.getReviewsByInvId(inv_id)
       
-      // Apply fromatting to each review
+      // Loops over each review in the array and returns a new array
       reviews = reviews.map(r => {
         return {
-          ...r,
-          review_screenname: utilities.buildScreenName(r.account_firstname, r.account_lastname),
-          review_date_formatted: utilities.formatReviewDate(r.review_date)
+          ...r, // spread the original data: keep review_id, review_text, etc)
+          // Apply helper for formatting each review
+          review_screenname: utilities.buildScreenName(r.account_firstname, r.account_lastname), //  "MSoto"
+          review_date_formatted: utilities.formatReviewDate(r.review_date) // "March 10, 2025"
         }
       })
 
@@ -136,12 +137,6 @@ invCont.buildVehicleDetail = async function (req, res, next) {
         console.error("[CTRL] Error fetching reviews:", reviewErr);
         reviews = [];
     }
-    // Ensure we always work with an array
-    reviews = Array.isArray(reviews) ? reviews : []
-
-    // Sort newest first by review_date
-    reviews.sort((a, b) => new Date(b.review_date) - new Date(a.review_date))
-
     // Convenience flag for the EJS view
     const hasReviews = reviews.length > 0
 
@@ -158,9 +153,9 @@ invCont.buildVehicleDetail = async function (req, res, next) {
     const milesFormatted = Number.isFinite(milesNumber)
       ? milesNumber.toLocaleString("en-US")
       : String(vehicle.inv_miles)
-
     // console.log("[CTRL] rendering details for:", name)
 
+    // Logged-in state and review form info
     const loggedin = res.locals.loggedin || false // Boolean if the user is logged in
     const accountData = res.locals.accountData || null // user info for the review form
     const accountId = accountData ? accountData.account_id : null 
