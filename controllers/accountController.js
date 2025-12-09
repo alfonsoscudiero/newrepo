@@ -7,6 +7,7 @@ const utilities = require("../utilities");
 // controllers/accountController.js
 const accountModel = require("../models/account-model") // model to save account data
 // bcryptjs for password hashing
+const reviewModel = require("../models/review-model") // model used to return reviews by account Id
 const bcrypt = require("bcryptjs")
 // Add JWT for authentication
 const jwt = require("jsonwebtoken")    
@@ -19,17 +20,33 @@ require("dotenv").config()
  * **************************************** */
 async function buildAccountManagement(req, res, next) {
   try {
+    // Build the nav for the layout
     let nav = await utilities.getNav()
+    // Get the logged-in user's account data from res.locals
     const accountData = res.locals.accountData
-    // Render the management page view
+    // Prepare an array to hold user's reviews
+    let accountReviews = []
+    // Fetch reviews if we have a valid account_id
+    if (accountData && accountData.account_id) {
+      // Call the review model to get all reviews 
+      const reviews = await reviewModel.getReviewsByAccountId(accountData.account_id)
+      if (reviews && reviews.length > 0) {
+        // Map reviews and add formatted_review_date
+        accountReviews = reviews.map(r => ({
+        ...r,
+        formatted_review_date: utilities.formatReviewDate(r.review_date),
+        }))
+      }
+    }
+    // Render and passing Account Reviews
     res.render("account/management", {
       title: "Account Management",
       nav,
       errors: null,
       accountData,
+      accountReviews,
     })
   } catch (error) {
-    // Debugging
     console.error("[CTRL] Error building account management view", error)
     next(error)
   }
