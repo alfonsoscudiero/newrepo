@@ -80,9 +80,9 @@ router.get(
  * ************************** */
 router.post(
   "/update",
+  utilities.checkLogin, // ensure user is still logged in
   validate.updateAccountRules(), // Apply rules
   validate.checkUpdateAccountData, // Check errors
-  utilities.checkLogin, // ensure user is still logged in
   utilities.handleErrors(accountController.updateAccount) // controller to update DB
 )
 
@@ -93,9 +93,9 @@ router.post(
  * ************************** */
 router.post(
   "/update-password",
+  utilities.checkLogin, 
   validate.updatePasswordRules(), // validate new password
   validate.checkUpdatePasswordData, // Check errors
-  utilities.checkLogin, 
   utilities.handleErrors(accountController.updatePassword) 
 )
 

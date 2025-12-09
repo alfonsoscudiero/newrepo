@@ -49,7 +49,7 @@
           required
           minlength="2"
           placeholder="First name"
-          value="<%= locals.account_firstname ?? accountData.account_firstname %>"
+          value="<%= accountData.account_firstname %>"
         >
       </div>
 
@@ -63,7 +63,7 @@
           required
           minlength="2"
           placeholder="Last name"
-          value="<%= locals.account_lastname ?? accountData.account_lastname %>"
+          value="<%= accountData.account_lastname %>"
         >
       </div>
 
@@ -76,7 +76,7 @@
           name="account_email"
           required
           placeholder="you@example.com"
-          value="<%= locals.account_email ?? accountData.account_email %>"
+          value="<%= accountData.account_email %>"
         >
       </div>
 
