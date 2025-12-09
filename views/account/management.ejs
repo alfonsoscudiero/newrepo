@@ -31,6 +31,37 @@
       <a class="acct-link" href="/inv/">Go to Inventory Management</a>
     </p>
   <% } %>
-</div>
+
+  <!-- Reviews Section -->
+  <!-- Final Project | week 13 -->
+  <% if (accountData && accountData.account_id) { %>
+    <h3>My Reviews</h3>
+
+    <% if (accountReviews && accountReviews.length > 0) { %>
+      <!-- Ordered list of the user's reviews -->
+      <ul class="account-reviews-list">
+        <% accountReviews.forEach(function (review) { %>
+          <li class="account-review-item">
+            <div class="account-review-text">
+              Reviewed the <%= review.inv_year %> <%= review.inv_make %> <%= review.inv_model %> on <%= review.formatted_review_date %> 
+            </div>
+            <div class="account-review-actions">
+              <a class="btn-review" href="/review/edit/<%= review.review_id %>" >Edit</a>
+              <a class="btn-review btn-review-delete" href="/review/delete/<%= review.review_id %>">Delete</a>
+            </div>
+          </li>
+        <% }) %>
+      </>
+    <% } else { %>
+      <!-- User is logged in but has no reviews yet -->
+      <p class="account-reviews-empty">
+        You haven't written any reviews yet.
+      </p>
+    <% } %>  
+
+  <% } %><!-- end review block -->
+</div> <!-- end .acct-links -->
+
+
 
 
