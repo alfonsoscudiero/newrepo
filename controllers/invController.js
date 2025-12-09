@@ -427,10 +427,10 @@ invCont.buildEditInventory = async function (req, res, next) {
       throw new Error("Invalid vehicle id.")
     }
 
-    // 2) Build navigation for layout
+    // Build navigation for layout
     const nav = await utilities.getNav()
 
-    // 3) Ask the model for this specific vehicle
+    // Ask the model for this specific vehicle
     const itemData = await invModel.getVehicleById(inv_id)
 
     // If nothing came back, throw error
@@ -438,16 +438,16 @@ invCont.buildEditInventory = async function (req, res, next) {
       throw new Error("No data returned for inventory item with id " + inv_id)
     }
 
-    // 4) Get all classifications for the dropdown
+    // Get all classifications for the dropdown
     let classifications = []
     if (typeof invModel.getClassifications === "function") {
       classifications = await invModel.getClassifications()
     }
 
-    // 5) Build a readable name for the page title and heading
+    // Build a readable name for the page title and heading
     const itemName = `${itemData.inv_make} ${itemData.inv_model}`
 
-    // 6) Render the edit-inventory view and pre-fill all fields
+    // Render the edit-inventory view and pre-fill all fields
     res.render("inventory/edit-inventory", {
       title: "Edit " + itemName,
       nav,
