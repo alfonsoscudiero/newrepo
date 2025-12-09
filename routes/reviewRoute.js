@@ -18,7 +18,7 @@ router.post(
   "/add",
   reviewValidate.reviewRules(),     // run validation rules
   reviewValidate.checkReviewData,   // check errors & possibly re-render
-  utilities.handleErrors(reviewController.addReview)        // if OK, actually insert into DB
+  utilities.handleErrors(reviewController.addReview) // if OK, actually insert into DB
 )
 
 /* ***************************
