@@ -1066,6 +1066,33 @@ button[disabled] {
     color: var(--c-100);
 }
 
+/* Flash messages output */
+.reviews-section .flash-messages {
+    margin: 0.5rem 0;
+}
+
+.reviews-section .messages {
+    padding: 0;
+    margin: 0;
+}
+
+.reviews-section .messages li {
+    list-style: none;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    max-width: 600px;
+    animation: flashFadeIn 0.4s ease, flashFadeOut 0.5s ease 3s forwards;
+}
+
+.reviews-section .messages li.notice {
+    color: var(--c-800);
+}
+
+.reviews-section .messages li.error {
+    color: var(--or);
+}
+
 /* ***************************
  *  ====== Larger screens ======   
  * ************************** */
