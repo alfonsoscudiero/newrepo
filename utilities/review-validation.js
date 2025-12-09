@@ -1,84 +1,45 @@
 // utilities/review-validation.js
-// Required modules
-const utilities = require(".")
+// Server-side validation rules for reviews
+
 const { body, validationResult } = require("express-validator")
+const utilities = require("./")
 
-// Models
-const invModel = require("../models/inventory-model")
-const reviewModel = require("../models/review-model")
-
-// validation object
 const reviewValidate = {}
 
 /* ******************************
- * Review Form Validation Rules
+ * Validation rules for add review
  * ****************************** */
 reviewValidate.reviewRules = () => {
   return [
-    body("screen_name")
-      .trim()
-      .escape()
-      .notEmpty()
-      .withMessage("Screen name is required."),
-
     body("review_text")
       .trim()
-      .escape()
-      .notEmpty()
-      .withMessage("Please write a review.")
-      .bail()
       .isLength({ min: 10 })
-      .withMessage("Review must be at least 10 characters long."),
+      .withMessage("Please provide a review of at least 10 characters."),
+    body("inv_id")
+      .isInt({ min: 1 })
+      .withMessage("A valid vehicle id is required."),
+    body("account_id")
+      .isInt({ min: 1 })
+      .withMessage("A valid account id is required."),
   ]
 }
 
 /* ******************************
- * Check review data and either
- * Re-render the vehicle details view with errors or 
- * continue to the controller to insert the review
+ * Check data and handle errors
  * ****************************** */
 reviewValidate.checkReviewData = async (req, res, next) => {
-  // Ask express-validator for any errors found by reviewRules()
   const errors = validationResult(req)
 
-  // Check errors
-  // If there are errors, rebuild vehicle details view with messages
+  // If validation errors exist
   if (!errors.isEmpty()) {
-    try {
-      const nav = await utilities.getNav()
-      const inv_id = Number(req.body.inv_id)
+    const firstMsg = errors.array()[0].msg     
+    const inv_id = req.body.inv_id  // vehicle ID from the form
 
-      // Get vehicle data + existing reviews to rebuild the page
-      const vehicleData = await invModel.getVehicleByInvId(inv_id)
-      const reviews = await reviewModel.getReviewsByInvId(inv_id)
-
-      const vehicle = vehicleData[0]
-      const title = `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`
-
-      const loggedin = res.locals.loggedin
-      const accountData = res.locals.accountData || {}
-      const accountId = accountData.account_id
-      const screenName = utilities.buildScreenName(accountData)
-
-      // Re-render the same vehicle details view, but showing the errors
-      return res.render("inventory/details", {
-        title,
-        nav,
-        vehicle,
-        reviews,
-        errors,        // express-validator errors
-        loggedin,
-        accountId,
-        screenName,
-        review_text: req.body.review_text, // sticky textarea value
-      })
-    } catch (err) {
-      // If something unexpected happens, just pass the error to the global error handler
-      return next(err)
-    }
+    req.flash("error", firstMsg)  // store message for display
+    return res.redirect(`/inv/detail/${inv_id}`) // controller will rebuild page
   }
 
-  // If OK, continue to controller to insert the review
+  // No validation errors: continue to controller
   next()
 }
 
