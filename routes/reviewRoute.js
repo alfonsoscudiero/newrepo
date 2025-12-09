@@ -16,9 +16,9 @@ const reviewValidate = require("../utilities/review-validation")
  **************************************** */
 router.post(
   "/add",
-  reviewValidate.reviewRules(),     // 1) run validation rules
-  reviewValidate.checkReviewData,   // 2) check errors & possibly re-render
-  utilities.handleErrors(reviewController.addReview)        // 3) if OK, actually insert into DB
+  reviewValidate.reviewRules(),     // run validation rules
+  reviewValidate.checkReviewData,   // check errors & possibly re-render
+  utilities.handleErrors(reviewController.addReview)        // if OK, actually insert into DB
 )
 
 /* ***************************

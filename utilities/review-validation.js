@@ -33,7 +33,9 @@ reviewValidate.reviewRules = () => {
 }
 
 /* ******************************
- * Check review data and either Re-render the vehicle details view with errors or continue to the controller to insert the review
+ * Check review data and either
+ * Re-render the vehicle details view with errors or 
+ * continue to the controller to insert the review
  * ****************************** */
 reviewValidate.checkReviewData = async (req, res, next) => {
   // Ask express-validator for any errors found by reviewRules()
