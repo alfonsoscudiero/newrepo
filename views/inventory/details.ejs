@@ -27,6 +27,10 @@
     <!-- Final Project | Weeks 12-14 -->
     <div class="reviews-section">
       <h3>Customer Reviews</h3>
+      <!-- Flash messages for review success or failure -->
+      <div class="flash-messages">
+        <%- messages() %>
+      </div>
       <!-- If there are reviews -->
       <% if (hasReviews) { %>
         <div class="reviews-list">
