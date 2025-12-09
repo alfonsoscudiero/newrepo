@@ -519,7 +519,7 @@ footer p {
     font-weight: 600;
     width: 100%;
     max-width: 600px;
-    animation: flashFadeIn 0.4s ease, flashFadeOut 0.5s ease 3s forwards;
+    /* animation: flashFadeIn 0.4s ease, flashFadeOut 0.5s ease 3s forwards; */
 }
 
 .notice li {
@@ -699,7 +699,7 @@ footer p {
 }
 
 .notice li {
-    margin-left: 0.25rem;
+    margin: 1.5rem 0 0 0.25rem;
     line-height: 1.4;
     font-size: var(--font-size-small-screen);
 }
@@ -1067,30 +1067,8 @@ button[disabled] {
 }
 
 /* Flash messages output */
-.reviews-section .flash-messages {
-    margin: 0.5rem 0;
-}
-
-.reviews-section .messages {
-    padding: 0;
-    margin: 0;
-}
-
-.reviews-section .messages li {
-    list-style: none;
-    margin-bottom: 0.5rem;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    max-width: 600px;
-    animation: flashFadeIn 0.4s ease, flashFadeOut 0.5s ease 3s forwards;
-}
-
-.reviews-section .messages li.notice {
-    color: var(--c-800);
-}
-
-.reviews-section .messages li.error {
-    color: var(--or);
+.flash-messages .notice .review-error{
+    animation: none
 }
 
 /* ***************************

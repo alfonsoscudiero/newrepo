@@ -27,10 +27,7 @@
     <!-- Final Project | Weeks 12-14 -->
     <div class="reviews-section">
       <h3>Customer Reviews</h3>
-      <!-- Flash messages for review success or failure -->
-      <div class="flash-messages">
-        <%- messages() %>
-      </div>
+
       <!-- If there are reviews -->
       <% if (hasReviews) { %>
         <div class="reviews-list">
@@ -60,6 +57,10 @@
 
       <!-- If logged in -->
       <% } else { %>
+        <!-- Flash messages for review success or failure -->
+        <div class="flash-messages notice review-error">
+          <%- messages() %>
+        </div>
         <div class="review-form-card">
           <h4>Leave a Review</h4>
           <form action="/reviews/add" method="post" class="review-form">
