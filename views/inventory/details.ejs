@@ -60,15 +60,6 @@
 
       <!-- If logged in -->
       <% } else { %>
-        <!-- Server-side validation errors -->
-        <% if (typeof errors !== "undefined" && !errors.isEmpty()) { %>
-          <ul class="notice">
-            <% errors.array().forEach(error => { %>
-              <li><%= error.msg %></li>
-            <% }) %>
-          </ul>
-        <% } %>
-
         <div class="review-form-card">
           <h4>Leave a Review</h4>
           <form action="/reviews/add" method="post" class="review-form">
@@ -85,6 +76,7 @@
             <!-- Review text -->
             <label for="review_text">Review:</label>
             <textarea 
+              id="review_text"
               name="review_text" 
               required 
               placeholder="Write your review..."
