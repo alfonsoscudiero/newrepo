@@ -70,8 +70,48 @@ async function addReview (review_text, inv_id, account_id) {
         throw error // Send error upward to the controller
     }
 }
+/* *************************************
+ * Get all reviews by account_id
+ * Used on Account Management page | Week 13
+ * ************************************* */
+async function getReviewsByAccountId (account_id) {
+    try {
+        const sql = `
+        SELECT
+            r.review_id,
+            r.review_text,
+            r.review_date,
+            r.inv_id,
+            r.account_id,
+            i.inv_year,
+            i.inv_make,
+            i.inv_model
+        FROM public.review AS r
+        JOIN public.inventory AS i
+            ON r.inv_id = i.inv_id
+        WHERE r.account_id = $1
+        ORDER BY r.review_date DESC;
+        `
+
+    const result = await pool.query(sql, [account_id])
+    // Debug
+    console.log(
+        '[MODEL] getReviewsByAccountId account_id:',
+        account_id,
+        '| rows:',
+        result?.rows?.length
+    )
+    // Safe to always return an array
+    return result.rows || []
+    } catch (error){
+        console.error('[MODEL] getReviewsByAccountId error:', error)
+        return []
+    }
+}
+
 // Export functions so controllers can call them
 module.exports = {
     getReviewsByInvId,
     addReview,
+    getReviewsByAccountId,
 }
