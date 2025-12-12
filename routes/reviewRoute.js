@@ -21,6 +21,29 @@ router.post(
   utilities.handleErrors(reviewController.addReview) // if OK, actually insert into DB
 )
 
+/* ****************************************
+ * Deliver the Edit Review form
+ * GET /reviews/edit/:reviewId
+ **************************************** */
+router.get(
+  "/edit/:reviewId",
+  utilities.handleErrors(reviewController.buildEditReviewView)
+)
+
+
+/* ****************************************
+ * Process the Edit Review form submission
+ * POST /reviews/update
+ **************************************** */
+router.post(
+  "/update",
+  reviewValidate.updateReviewRules(),          // run validation rules on the review text
+  reviewValidate.checkUpdateReviewData,  // handle validation errors for UPDATE form
+  utilities.handleErrors(reviewController.updateReview) // actually perform DB update
+)
+
+
+
 /* ***************************
  *  Export the router so it can be used by server.js
  * ************************** */
