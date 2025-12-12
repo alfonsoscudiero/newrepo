@@ -46,8 +46,8 @@
               Reviewed the <%= review.inv_year %> <%= review.inv_make %> <%= review.inv_model %> on <%= review.formatted_review_date %> 
             </div>
             <div class="account-review-actions">
-              <a class="btn-review" href="/review/edit/<%= review.review_id %>" >Edit</a>
-              <a class="btn-review btn-review-delete" href="/review/delete/<%= review.review_id %>">Delete</a>
+              <a class="btn-review" href="/reviews/edit/<%= review.review_id %>" >Edit</a>
+              <a class="btn-review btn-review-delete" href="/reviews/delete/<%= review.review_id %>">Delete</a>
             </div>
           </li>
         <% }) %>
