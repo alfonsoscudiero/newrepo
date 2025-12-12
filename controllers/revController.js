@@ -49,5 +49,107 @@ revCont.addReview = async function (req, res, next) {
   }
 }
 
+/* ****************************************
+ *  Build Edit Review view (GET /reviews/edit/:reviewId)
+ * *************************************** */
+revCont.buildEditReviewView = async function (req, res, next) {
+  try {
+    // Get reviewId from URL parameter and make sure it's a number
+    const reviewId = Number(req.params.reviewId)
+    console.log("[CTRL] buildEditReviewView reviewId:", reviewId)
+
+    if (!reviewId || Number.isNaN(reviewId)) {
+      req.flash("error", "Invalid review id.")
+      return res.redirect("/account/")
+    }
+
+    // Build the nav for the layout
+    const nav = await utilities.getNav()
+
+    // Get the review data from the database
+    const reviewData = await reviewModel.getReviewById(reviewId)
+    console.log("[CTRL] buildEditReviewView reviewData:", reviewData)
+
+    // If no review was found, redirect back to account management
+    if (!reviewData) {
+      req.flash("error", "The requested review could not be found.")
+      return res.redirect("/account/")
+    }
+
+    // Verify that the logged-in user owns this review
+    const accountData = res.locals.accountData
+    if (accountData && accountData.account_id !== reviewData.account_id) {
+      req.flash("error", "You are not authorized to edit this review.")
+      return res.redirect("/account/")
+    }
+
+    // Prepare a friendly name and formatted date for the view
+    const itemName = `${reviewData.inv_make} ${reviewData.inv_model}`
+    const formattedDate = utilities.formatReviewDate(reviewData.review_date)
+
+    // 6. Render the Edit Review page with existing data
+    return res.render("review/edit", {
+      title: `Edit ${itemName} Review`,
+      nav,
+      errors: null,  // no validation errors on initial GET
+      review_id: reviewData.review_id, // hidden field in the form
+      review_date: formattedDate, // read-only date field
+      review_text: reviewData.review_text, // textarea pre-filled with current text
+    })
+  } catch (error) {
+    console.error("[CTRL] buildEditReviewView error:", error)
+    // Let the global error handler take care of this
+    return next(error)
+  }
+}
+
+/* ****************************************
+ *  Process Update Review (POST /reviews/update)
+ * *************************************** */
+revCont.updateReview = async function (req, res, next) {
+  let reviewIdOutside
+
+  try {
+    // Get data that came from the Edit Review form
+    const { review_id, review_text } = req.body
+    const reviewId = Number(review_id)
+    reviewIdOutside = reviewId
+
+    console.log("[CTRL] updateReview review_id from form:", review_id)
+    console.log("[CTRL] updateReview new review_text:", review_text)
+
+    // If reviewId is missing or NaN
+    if (!reviewId || Number.isNaN(reviewId)) {
+      req.flash("error", "Invalid review id.")
+      return res.redirect("/account/")
+    }
+
+    // Call the model to update the review in the database
+    const updateResult = await reviewModel.updateReview(reviewId, review_text)
+
+    // If the update failed (no rows affected), inform the user
+    if (!updateResult) {
+      req.flash(
+        "error",
+        "Sorry, the review could not be updated. Please try again."
+      )
+      return res.redirect("/account/")
+    }
+
+    // Success path
+    req.flash("notice", "Your review was successfully updated.")
+    return res.redirect("/account/")
+  } catch (error) {
+    // Handle unexpected errors
+    console.error("[CTRL] updateReview error:", error)
+    req.flash(
+      "error",
+      "An unexpected error occurred while updating your review."
+    )
+    // Even on error, send them back to Account Management
+    return res.redirect("/account/")
+  }
+}
+
 // Export the controller object
 module.exports = revCont
