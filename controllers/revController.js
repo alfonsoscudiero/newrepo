@@ -2,6 +2,8 @@
 
 // Import the review model so this controller can talk to the database
 const reviewModel = require("../models/review-model")
+// Bring in shared utility functions (navigation builder, grid builder, etc.)
+const utilities = require("../utilities/")
 // Create a controller object to hold our review-related functions
 const revCont = {}
 
@@ -84,10 +86,10 @@ revCont.buildEditReviewView = async function (req, res, next) {
     }
 
     // Prepare a friendly name and formatted date for the view
-    const itemName = `${reviewData.inv_make} ${reviewData.inv_model}`
+    const itemName = `${reviewData.inv_year} ${reviewData.inv_make} ${reviewData.inv_model}`
     const formattedDate = utilities.formatReviewDate(reviewData.review_date)
 
-    // 6. Render the Edit Review page with existing data
+    // Render the Edit Review page with existing data
     return res.render("review/edit", {
       title: `Edit ${itemName} Review`,
       nav,

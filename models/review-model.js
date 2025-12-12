@@ -125,7 +125,8 @@ async function getReviewById(review_id) {
             r.inv_id,
             r.account_id,
             i.inv_make,
-            i.inv_model
+            i.inv_model,
+            i.inv_year
         FROM public.review AS r
         JOIN public.inventory AS i
             ON r.inv_id = i.inv_id
