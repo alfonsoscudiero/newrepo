@@ -109,9 +109,93 @@ async function getReviewsByAccountId (account_id) {
     }
 }
 
+/* *************************************
+ * Get a single review by review_id
+ * Called from buildEditReviewView() in revController.js, and 
+ * checkUpdateReviewData() in review-validation.js
+ * ************************************* */
+async function getReviewById(review_id) {
+    try {
+        // Fetch review from the database
+        const sql = `
+        SELECT
+            r.review_id,
+            r.review_text,
+            r.review_date,
+            r.inv_id,
+            r.account_id,
+            i.inv_make,
+            i.inv_model
+        FROM public.review AS r
+        JOIN public.inventory AS i
+            ON r.inv_id = i.inv_id
+        WHERE r.review_id = $1;
+        `
+
+        // Execute query passing the review id
+        const result = await pool.query(sql, [review_id])
+
+        // Debug: log how many rows came back
+        console.log(
+            "[MODEL] getReviewById review_id:",
+            review_id,
+            "| rows:",
+            result?.rows?.length
+        )
+
+        // Return a single row, or null if none found
+        return result.rows[0] || null
+    } catch (error) {
+        console.error("[MODEL] getReviewById error:", error)
+        // On error, return null so controller can handle it
+        return null
+    }
+}
+
+/* *************************************
+ * Update an existing review in the DB
+ * Called from revCont.updateReview() in revController.js
+ * ************************************* */
+async function updateReview(review_id, review_text) {
+    try {
+        // SQL UPDATE statement:
+        const sql = `
+        UPDATE public.review
+        SET review_text = $1
+        WHERE review_id = $2
+        RETURNING *;
+        `
+
+        // Execute the UPDATE statement directly in PostgreSQL
+        const result = await pool.query(sql, [review_text, review_id])
+
+        // Debug:
+        console.log(
+            "[MODEL] updateReview review_id:",
+            review_id,
+            "| rowCount:",
+            result.rowCount
+        )
+
+        // If no rows were updated, return null 
+        if (result.rowCount === 0) {
+            return null
+        }
+
+        // Return the updated row
+        return result.rows[0]
+    } catch (error) {
+        console.error("[MODEL] updateReview error:", error)
+        // Let the controller handle unexpected DB errors
+        throw error
+    }
+}
+
 // Export functions so controllers can call them
 module.exports = {
     getReviewsByInvId,
     addReview,
     getReviewsByAccountId,
+    getReviewById,
+    updateReview,
 }
