@@ -519,7 +519,7 @@ footer p {
     font-weight: 600;
     width: 100%;
     max-width: 600px;
-    /* animation: flashFadeIn 0.4s ease, flashFadeOut 0.5s ease 3s forwards; */
+    animation: flashFadeIn 0.4s ease, flashFadeOut 0.5s ease 3s forwards;
 }
 
 .notice li {
@@ -1178,6 +1178,28 @@ button[disabled] {
     resize: vertical;
 }
 
+/* Delete Review Page */
+.delete-review-page .auth-card-wrapper {
+    padding-left: 1.5rem;   /* mismo gutter */
+    padding-right: 1.5rem;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+.delete-review-page h2 {
+    text-align: left;
+    margin-top: 0.25rem;
+    margin-bottom: -0.25rem;
+}
+
+.delete-review-page textarea{
+    user-select: none;
+    resize: none;
+}
+
+.delete-review-page .form-row-actions {
+    display: flex;
+    align-items: center;
+}
 
 /* ***************************
  *  ====== Larger screens ======   

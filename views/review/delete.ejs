@@ -1,0 +1,59 @@
+<% /* =============================================
+  views/review/delete.ejs
+  Module 07 - Delete Review Confirmation | Final Project
+  ============================================= */ %>
+
+<h1><%= title %></h1>
+
+<!-- Flash messages -->
+<%- messages() %>
+
+<section class="card auth-card review-form-card delete-review-page">
+  <div class="auth-card-wrapper">
+    <h2>Confirm Correct Item.<br> Deletion Cannot Be Undone.</h2>
+
+    <form
+      id="deleteReviewForm"
+      class="form auth-form"
+      action="/reviews/delete"
+      method="post"
+      autocomplete="off"
+    >
+      <!-- Hidden primary key -->
+      <input type="hidden" name="review_id" id="review_id" value="<%= review_id %>">
+
+      <!-- Review Date (read-only, no selection) -->
+      <div class="form-row">
+        <label for="review_date">Review Date</label>
+        <input
+          id="review_date"
+          name="review_date"
+          type="text"
+          value="<%= review_date %>"
+          readonly
+          tabindex="-1"
+        >
+      </div>
+
+      <!-- Review Text (read-only, no selection) -->
+      <div class="form-row">
+        <label for="review_text">Review Text</label>
+        <textarea
+          id="review_text"
+          name="review_text"
+          rows="5"
+          readonly
+          tabindex="-1"
+        ><%= review_text %></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-row-actions" >
+        <button type="submit" class="btn primary btn-review-delete">
+          Delete Review
+        </button>
+
+      </div>
+    </form>
+  </div>
+</section>
