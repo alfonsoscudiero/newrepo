@@ -52,12 +52,12 @@ revCont.addReview = async function (req, res, next) {
 }
 
 /* ****************************************
- *  Build Edit Review view (GET /reviews/edit/:reviewId)
+ *  Build Edit Review view (GET /reviews/edit/:review_id)
  * *************************************** */
 revCont.buildEditReviewView = async function (req, res, next) {
   try {
     // Get reviewId from URL parameter and make sure it's a number
-    const reviewId = Number(req.params.reviewId)
+    const reviewId = Number(req.params.review_id)
     console.log("[CTRL] buildEditReviewView reviewId:", reviewId)
 
     if (!reviewId || Number.isNaN(reviewId)) {
@@ -152,6 +152,122 @@ revCont.updateReview = async function (req, res, next) {
     return res.redirect("/account/")
   }
 }
+
+/* ****************************************
+ *  Build delete review view (GET /reviews/delete/:review_id)
+ * *************************************** */
+revCont.buildDeleteReviewView = async function (req, res, next) {
+  try {
+    // Get reviewId from URL parameter and make sure it's a number
+    const reviewId = Number(req.params.review_id)
+    console.log("[CTRL] buildDeleteReviewView reviewId:", reviewId)
+
+    if (!reviewId || Number.isNaN(reviewId)) {
+      req.flash("error", "Invalid review id.")
+      return res.redirect("/account/")
+    }
+
+    // Build the nav for the layout
+    const nav = await utilities.getNav()
+
+    // Get the review data from the database
+    const reviewData = await reviewModel.getReviewById(reviewId)
+    console.log("[CTRL] buildDeleteReviewView reviewData:", reviewData)
+
+    // If no review was found, redirect back to account management
+    if (!reviewData) {
+      req.flash("error", "The requested review could not be found.")
+      return res.redirect("/account/")
+    }
+
+    // Verify that the logged-in user owns this review
+    const accountData = res.locals.accountData
+    if (accountData && accountData.account_id !== reviewData.account_id) {
+      req.flash("error", "You are not authorized to delete this review.")
+      return res.redirect("/account/")
+    }
+
+    // Prepare a friendly name and formatted date for the view
+    const itemName = `${reviewData.inv_year} ${reviewData.inv_make} ${reviewData.inv_model}`
+    const formattedDate = utilities.formatReviewDate(reviewData.review_date)
+
+    // Render the Delete Review page with existing data
+    return res.render("review/delete", {
+      title: `Delete ${itemName} Review`,
+      nav,
+      review_id: reviewData.review_id, // hidden field in the form
+      review_date: formattedDate, // read-only date field
+      review_text: reviewData.review_text, // textarea pre-filled with current text
+    })
+  } catch (error) {
+    console.error("[CTRL] buildDeleteReviewView error:", error)
+    // Let the global error handler take care of this
+    return next(error)
+  }
+}
+
+/* ****************************************
+ *  Process Delete Review (POST /reviews/delete)
+ * *************************************** */
+revCont.deleteReview = async function (req, res, next) {
+  let reviewIdOutside
+
+  try {
+    // Get data that came from the Edit Review form
+    const { review_id } = req.body
+    const reviewId = Number(review_id)
+    reviewIdOutside = reviewId
+
+    console.log("[CTRL] deleteReview review_id from form:", review_id)
+
+    // If reviewId is missing or NaN
+    if (!reviewId || Number.isNaN(reviewId)) {
+      req.flash("error", "Invalid review id.")
+      return res.redirect("/account/")
+    }
+    // Check if user is logged-in
+    const accountData = res.locals.accountData
+    if (!accountData) {
+      req.flash("error", "You must be logged in to delete a review.")
+      return res.redirect("/account/login")
+    }
+
+    // Fetch the review  + confirm ownership
+      const reviewData = await reviewModel.getReviewById(reviewId)
+      if (!reviewData) {
+        req.flash("error", "The requested review could not be found.")
+        return res.redirect("/account/")
+      }
+      if (accountData.account_id !== reviewData.account_id) {
+        req.flash("error", "You are not authorized to delete this review.")
+        return res.redirect("/account/")
+      }
+
+    // Delete Review based on IDs
+    const deleteResult = await reviewModel.deleteReview(reviewId, accountData.account_id)
+    // If the delete failed (no rows affected), inform the user
+    if (!deleteResult) {
+      req.flash(
+        "error",
+        "Sorry, the review could not be deleted. Please try again."
+      )
+      return res.redirect("/account/")
+    }
+    // Success path
+    req.flash("notice", "Your review was successfully deleted.")
+    return res.redirect("/account/")
+  } catch (error) {
+    // Handle unexpected errors
+    console.error("[CTRL] deleteReview error:", error)
+    req.flash(
+      "error",
+      "An unexpected error occurred while deleting your review."
+    )
+    // Even on error, send them back to Account Management
+    return res.redirect("/account/")
+  }
+}
+
 
 // Export the controller object
 module.exports = revCont
