@@ -210,13 +210,10 @@ revCont.buildDeleteReviewView = async function (req, res, next) {
  *  Process Delete Review (POST /reviews/delete)
  * *************************************** */
 revCont.deleteReview = async function (req, res, next) {
-  let reviewIdOutside
-
   try {
     // Get data that came from the Edit Review form
     const { review_id } = req.body
     const reviewId = Number(review_id)
-    reviewIdOutside = reviewId
 
     console.log("[CTRL] deleteReview review_id from form:", review_id)
 
@@ -254,7 +251,7 @@ revCont.deleteReview = async function (req, res, next) {
       return res.redirect("/account/")
     }
     // Success path
-    req.flash("notice", "Your review was successfully deleted.")
+    req.flash("notice", `Your review for vehicle #${deleteResult.inv_id} was successfully deleted.`)
     return res.redirect("/account/")
   } catch (error) {
     // Handle unexpected errors
@@ -267,7 +264,6 @@ revCont.deleteReview = async function (req, res, next) {
     return res.redirect("/account/")
   }
 }
-
 
 // Export the controller object
 module.exports = revCont

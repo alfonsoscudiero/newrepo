@@ -155,7 +155,7 @@ async function getReviewById(review_id) {
 
 /* *************************************
  * Update an existing review in the DB
- * Called from revCont.updateReview() in revController.js
+ * Called from updateReview() in revController.js
  * ************************************* */
 async function updateReview(review_id, review_text) {
     try {
@@ -192,6 +192,43 @@ async function updateReview(review_id, review_text) {
     }
 }
 
+/* *************************************
+ * Delete an existing review in the DB
+ * Called from deleteReview() in revController.js
+ * ************************************* */
+async function deleteReview(review_id, account_id) {
+    try {
+        // SQL DELETE statement:
+        const sql = `
+        DELETE FROM public.review
+        WHERE review_id = $1
+        AND account_id = $2
+        RETURNING *;
+        `
+
+        // Execute the DELETE statement directly in PostgreSQL
+        const result = await pool.query(sql, [review_id, account_id])
+
+        // Debug:
+        console.log(
+            "[MODEL] deleteReview review_id:",
+            review_id,
+            "| rowCount:",
+            result.rowCount
+        )
+        // If no rows were deleted, return null 
+        if (result.rowCount === 0) {
+            return null
+        }
+        // Return the deleted row (RETURNING *)
+        return result.rows[0]
+    } catch (error) {
+        console.error("[MODEL] deleteReview error:", error)
+        // Let the controller handle unexpected DB errors
+        throw error
+    }
+}
+
 // Export functions so controllers can call them
 module.exports = {
     getReviewsByInvId,
@@ -199,4 +236,5 @@ module.exports = {
     getReviewsByAccountId,
     getReviewById,
     updateReview,
+    deleteReview,
 }
