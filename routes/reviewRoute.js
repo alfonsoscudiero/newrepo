@@ -16,6 +16,7 @@ const reviewValidate = require("../utilities/review-validation")
  **************************************** */
 router.post(
   "/add",
+  utilities.checkLogin,
   reviewValidate.reviewRules(),     // run validation rules
   reviewValidate.checkReviewData,   // check errors & possibly re-render
   utilities.handleErrors(reviewController.addReview) // if OK, actually insert into DB
@@ -26,10 +27,10 @@ router.post(
  * GET /reviews/edit/:reviewId
  **************************************** */
 router.get(
-  "/edit/:reviewId",
+  "/edit/:review_id",
+  utilities.checkLogin,
   utilities.handleErrors(reviewController.buildEditReviewView)
 )
-
 
 /* ****************************************
  * Process the Edit Review form submission
@@ -37,12 +38,31 @@ router.get(
  **************************************** */
 router.post(
   "/update",
+  utilities.checkLogin,
   reviewValidate.updateReviewRules(),          // run validation rules on the review text
   reviewValidate.checkUpdateReviewData,  // handle validation errors for UPDATE form
   utilities.handleErrors(reviewController.updateReview) // actually perform DB update
 )
 
+/* ****************************************
+ * Deliver the Delete Review form
+ * GET /reviews/delete/:reviewId
+ **************************************** */
+router.get(
+  "/delete/:review_id",
+  utilities.checkLogin,
+  utilities.handleErrors(reviewController.buildDeleteReviewView)
+)
 
+/* ****************************************
+ * Process the Delete Review form
+ * POST /reviews/delete/:reviewId
+ **************************************** */
+router.post(
+  "/delete",
+  utilities.checkLogin,
+  utilities.handleErrors(reviewController.deleteReview)
+)
 
 /* ***************************
  *  Export the router so it can be used by server.js
