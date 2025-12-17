@@ -1159,7 +1159,6 @@ button[disabled] {
 
 .review-form-card input {
     user-select: none;
-    pointer-events: none;
     font-size: var(--font-size-small-screen);
     color: var(--c-700);
 }
