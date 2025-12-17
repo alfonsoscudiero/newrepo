@@ -3,7 +3,7 @@
 
 const { body, validationResult } = require("express-validator")
 const utilities = require("./")
-
+const reviewModel = require("../models/review-model")
 const reviewValidate = {}
 
 /* ******************************
@@ -79,7 +79,7 @@ reviewValidate.checkUpdateReviewData = async (req, res, next) => {
       // Format the stored review date for display
       const formattedDate = utilities.formatReviewDate(reviewData.review_date)
 
-      const itemName = `${reviewData.inv_make} ${reviewData.inv_model}`
+      const itemName = `${reviewData.inv_year} ${reviewData.inv_make} ${reviewData.inv_model}`
 
       // Render the Edit Review page again with errors and sticky data
       return res.render("review/edit", {
